@@ -1,0 +1,360 @@
+<p><a name="HOLTitle"></a></p>
+
+<h1>Automatically Scaling Web Applications on Windows Azure Web Sites</h1>
+
+<hr>
+
+<p><a name="Overview"></a></p>
+
+<h2>Overview</h2>
+
+<p>Windows Azure provides a set of features that allows you to monitor and scale your Web Site whenever is required. Moving static assets to a Storage account will leverage the load of your Web Site and with Auto-Scaling, your Windows Azure Web Sites will automatically scale accordingly with their CPU load. Additionally, you can use Endpoint monitoring to measure the response time of your Web site from different locations.</p>
+
+<p><a name="Objectives"></a></p>
+
+<h3>Objectives</h3>
+
+<p>In this hands-on lab, you will learn how to:</p>
+
+<ul>
+<li>Move static assets from your Web Site to your Windows Azure Storage account.</li>
+<li>Configure an Endpoint Monitoring for your Storage account.</li>
+<li>Set up Auto-Scaling for your Web Site.</li>
+</ul>
+
+<p><a name="Prerequisites"></a></p>
+
+<h3>Prerequisites</h3>
+
+<p>The following is required to complete this hands-on lab:</p>
+
+<ul>
+<li><a href="http://msdn.microsoft.com/vstudio/products/">Microsoft Visual Studio 2012 Express for Web</a></li>
+<li>A Windows Azure subscription - <a href="http://aka.ms/WATK-FreeTrial">sign up for a free trial</a></li>
+</ul>
+
+<p><a name="Setup"/></p>
+
+<h3>Setup</h3>
+
+<p>In order to execute the exercises in this hands-on lab you need to set up your environment.</p>
+
+<ol>
+<li><p>Open a Windows Explorer window and browse to the lab's <strong>Source</strong> folder.</p></li>
+<li><p>Execute the <strong>Setup.cmd</strong> file with Administrator privileges to launch the setup process that will configure your environment and check the dependencies.</p></li>
+<li><p>If the User Account Control dialog is shown, confirm the action to proceed.</p></li>
+</ol>
+
+<hr>
+
+<p><a name="Exercises"/></p>
+
+<h2>Exercises</h2>
+
+<p>This hands-on lab includes the following exercises:</p>
+
+<ol>
+<li><a href="#Exercise1">Moving Static Assets to Windows Azure Storage</a></li>
+<li><a href="#Exercise2">Configure Endpoint Monitoring</a></li>
+<li><a href="#Exercise3">Setting up Auto-Scaling for your Site</a></li>
+</ol>
+
+<p>Estimated time to complete this lab: <strong>45</strong> minutes.</p>
+
+<p><a name="GettingStarted"></a></p>
+
+<h3>Getting Started: Publishing Web Site to Windows Azure</h3>
+
+<p>First, you will need to deploy a Web Site to Windows Azure. An MVC 4 Application is provided in the <strong>Assets</strong> folder of this lab.</p>
+
+<p><a name="GettingStartedTask1"></a></p>
+
+<h4>Task 1 - Creating a New Web Site from the Windows Azure Portal</h4>
+
+<ol>
+<li><p>Go to the <a href="https://manage.windowsazure.com/">Windows Azure Management Portal</a> and sign in using the Microsoft credentials associated with your subscription.</p>
+
+<p><img src="Images/logging-azure-portal.png?raw=true" alt="Log on to Windows Azure portal" title="Log on to the Windows Azure portal">
+</p>
+
+<p><em>Log on to the Windows Azure Management Portal</em></p></li>
+<li><p>Click <strong>New</strong> on the command bar.</p>
+
+<p><img src="Images/new-website.png?raw=true" alt="Creating a new Web Site" title="Creating a new Web Site">
+</p>
+
+<p><em>Creating a new Web Site</em></p></li>
+<li><p>Click <strong>Compute</strong>, <strong>Web Site</strong> and then <strong>Quick Create</strong>. Provide an available URL for the new web site and click <strong>Create Web Site</strong>.</p>
+
+<p><img src="Images/quick-create.png?raw=true" alt="Creating a new Web Site using Quick Create" title="Creating a new Web Site using Quick Create">
+</p>
+
+<p><em>Creating a new Web Site using Quick Create</em></p></li>
+<li><p>Wait until the new <strong>Web Site</strong> is created.</p></li>
+<li><p>In the <strong>Dashboard</strong> page, under the <strong>quick glance</strong> section, click the <strong>Download the publish profile</strong> link.</p></li>
+<li><p>Download the publish profile file to a known location. Further in this exercise you will see how to use this file to publish a web application to a Windows Azure Web Sites from Visual Studio.</p>
+
+<p><img src="Images/save-link.png?raw=true" alt="Saving the publish profile file" title="Saving the publish profile">
+</p>
+
+<p><em>Saving the publish profile file</em></p></li>
+</ol>
+
+<p><a name="GettingStartedTask2"></a></p>
+
+<h4>Task 2 - Publishing an ASP.NET MVC 4 Application using Web Deploy</h4>
+
+<ol>
+<li><p>Open <strong>Visual Studio Express 2012 for Web</strong> as Administrator.</p></li>
+<li><p>Browse to the <strong>Source\Assets\AssetsWebSite</strong> folder of this lab and open the <strong>AssetsWebSite.sln</strong> solution.</p></li>
+<li><p>In the <strong>Solution Explorer</strong>,  right-click the web site project and select <strong>Publish</strong>.</p>
+
+<p><img src="Images/publishing-the-application.png?raw=true" alt="Publishing the Application" title="Publishing the Application">
+</p>
+
+<p><em>Publishing the web site</em></p></li>
+<li><p>In the <strong>Profile</strong> page, click <strong>Import</strong> and select the profile settings file you downloaded earlier in this exercise.</p>
+
+<p><img src="Images/importing-the-publish-profile.png?raw=true" alt="Importing the publish profile" title="Importing the publish profile">
+</p>
+
+<p><em>Importing publish profile</em></p></li>
+<li><p>In the <strong>Connection</strong> page, leave the imported values and click <strong>Validate Connection</strong>. Once the validation is completed, click <strong>Next</strong>.</p></li>
+<li><p>In the <strong>Preview</strong> page, click <strong>Publish</strong>.</p></li>
+<li><p>Once the publishing process finishes, your default browser will open the published web site. Verify that the web site was successfully published in Windows Azure.</p></li>
+</ol>
+
+<p><a name="Exercise1"></a></p>
+
+<h3>Exercise 1: Moving Static Assets to Windows Azure Storage</h3>
+
+<p>In this exercise, you will move your Web Site assets, such as Images and videos, to your Windows Azure Storage account and redirect your links to target the new location.</p>
+
+<p><a name="Ex1Task1" /></p>
+
+<h4>Task 1 - Creating a Storage Account from Management Portal</h4>
+
+<p>In this task you will learn how to create a new Storage Account using the Management Portal.</p>
+
+<ol>
+<li><p>Navigate to <a href="http://manage.windowsazure.com">http://manage.windowsazure.com</a> using a Web browser and sign in using the Microsoft Account associated with your Windows Azure account.</p></li>
+<li><p>In the menu located at the bottom, select <strong>New | Data Services | Storage | Quick Create</strong> to start creating a new Storage Account. Enter a unique name for the account and select a <strong>Region</strong> from the list. Click <strong>Create Storage Account</strong> to continue.</p>
+
+<p><img src="Images/create-storage-account-menu.png?raw=true" alt="create-storage-account-menu">
+</p>
+
+<p><em>Creating a new storage account</em></p></li>
+<li><p>In the <strong>Storage</strong> section, you will see the Storage Account you created with a <em>Creating</em> status. Wait until it changes to <em>Online</em> in order to continue with the following step.</p>
+
+<p><img src="Images/storage-account-created.png?raw=true" alt="storage-account-created">
+</p>
+
+<p><em>Storage Account created</em></p></li>
+<li><p>Click on the storage account name you created. You will enter to the <strong>Dashboard</strong> page which provides you with information about the status of the account and the service endpoints that can be used within your applications.</p>
+
+<p><img src="Images/storage-account-dashboard.png?raw=true" alt="storage-account-dashboard">
+</p>
+
+<p><em>Displaying the Storage Account Dashboard</em></p></li>
+<li><p>Click the <strong>Manage Keys</strong> button at the bottom bar.</p>
+
+<p><img src="Images/manage-keys-menu.png?raw=true" alt="manage-keys-menu">
+</p>
+
+<p><em>Managing Access Keys</em></p></li>
+<li><p>Take note of the <strong>Primary Access Key</strong>. You will use it in the next task to upload assets to your storage account. Click the check button to continue.</p>
+
+<p><img src="Images/copying-primary-key.png?raw=true" alt="Copying primary key">
+</p>
+
+<p><em>Copying Primary Access Key</em></p></li>
+<li><p>In the dashboard page, take note the <strong>Blobs</strong> service endpoint URL. You will use it in the next task to upload assets to your storage account.</p>
+
+<p><img src="Images/blobs-service-endpoint.png?raw=true" alt="blobs service endpoint">
+</p>
+
+<p><em>Taking note of the Blobs Service Endpoint</em></p></li>
+</ol>
+
+<p><a name="Ex1Task2" /></p>
+
+<h4>Task 2 - Moving Static Assets to Storage</h4>
+
+<ol>
+<li><p>Open <strong>Visual Studio Express 2012 for Web</strong> and open the <strong>AssetsWebSite</strong> solution located in the <strong>Source\Assets\AssetsWebSite</strong> folder of this lab.</p></li>
+<li><p>Open the view <strong>Index</strong> under the <strong>Views\Home</strong> folder. As you can see in the code, this view displays some images and a video using a HTML5 player. These assets are located within your application and will be deployed with your site in the specified region.</p></li>
+<li><p>Right-click the <strong>Content</strong> folder and select <strong>Open folder in File Explorer</strong>. Take note of the path of the folder.</p></li>
+<li><p>Using a Web browser, download <a href="https://github.com/downloads/WindowsAzure/azure-sdk-downloads/AzCopy.zip">https://github.com/downloads/WindowsAzure/azure-sdk-downloads/AzCopy.zip</a>. The <strong>AzCopy</strong> is a tool that allows you to upload files to a blob container. Once downloaded, unzip the file.</p></li>
+<li><p>Open the folder where you unzipped the <strong>AzCopy</strong> tool, hold the <strong>SHIFT</strong> key and right-click the <strong>Windows Explorer</strong> and select <strong>Open command window here</strong>. This will open the <strong>Command Prompt</strong> in the <strong>AzCopy</strong> folder.</p></li>
+<li><p>Execute the following script, replacing the following placeholders:</p>
+
+<p><strong>EXERCISE-ASSETS-FOLDER</strong>: The path where the <strong>Assets</strong> folder of the solution is located (e.g.: <em>C:\WATK\Labs\HOL-ScalingWindowsAzureWebSites\Assets\AssetsWebSite\AssetsWebSite\Assets)</em>.</p>
+
+<p><strong>STORAGE-ACCOUNT-BLOB-ENDPOINT</strong>: The blobs endpoint URL of the storage account <strong>plus</strong> the Container name you will upload the assets in lowercase (e.g.: <em><a href="http://mystorageaccountname.blob.core.windows.net/assets">http://mystorageaccountname.blob.core.windows.net/assets</a></em>).</p>
+
+<p><strong>STORAGE-ACCOUNT-KEY</strong>: The Primary Access key for the storage account.</p>
+
+<pre><code class="CMD">azcopy [EXERCISE-ASSETS-FOLDER] [STORAGE-ACCOUNT-BLOB-ENDPOINT] /destkey:[STORAGE-ACCOUNT-KEY] /S
+</code></pre>
+
+<p><img src="Images/azcopy-transfer-summary.png?raw=true" alt="azcopy-transfer-summary">
+</p>
+
+<p><em>Transfer Files Summary</em></p></li>
+<li><p>The tool will copy the files from the <strong>Content</strong> folder into the container you created. Go back to the Management Portal, to your Storage Account and go to <strong>Containers</strong> by clicking the link in the top menu.</p>
+
+<p><img src="Images/storage-containers-menu.png?raw=true" alt="storage-containers-menu">
+</p></li>
+<li><p>Select the container from the list your created using the <strong>AzCopy</strong> tool (e.g.: <em>assets</em>) and click <strong>Edit Container</strong> button from the bottom bar.</p></li>
+<li><p>Set the container <strong>Access</strong> to <em>Public Container</em>. Click the check button to continue.</p>
+
+<p><img src="Images/storage-edit-container.png?raw=true" alt="storage-edit-container">
+</p>
+
+<p><em>Editing Container Access</em></p></li>
+<li><p>Enter the container by clicking its name. Select the <strong>Azure_Intro.mp4</strong> blob and select <strong>Edit Blob</strong> from the bottom bar.</p>
+
+<p><img src="Images/storage-blob-edit-menu.png?raw=true" alt="storage-blob-edit-menu">
+</p></li>
+<li><p>Change the <strong>content type</strong> of the blob to <em>video/mp4</em>. This allows the Web browser to recognize the blob as a Video. Click the check button to continue.</p>
+
+<p><img src="Images/editing-blob-details.png?raw=true" alt="Editing Blob Details">
+</p>
+
+<p><em>Editing Blob Content Type</em></p></li>
+<li><p>Copy the URL of the Video blob. Open a Web browser, and paste the URL. This verifies that the content is accessible.</p></li>
+</ol>
+
+<p><a name="Ex1Task3" /></p>
+
+<h4>Task 3 - Updating Assets to target Storage</h4>
+
+<p>In this task, you will update the location of the static assets in your Web Application to use the Windows Azure Storage blob URL instead.</p>
+
+<ol>
+<li><p>Go back to <strong>Visual Studio</strong> and open the <strong>Index</strong> view under the <strong>Views</strong> folder.</p></li>
+<li><p>Replace the &lt;img&gt; <strong>src</strong> attribute value with the corresponding Storage blob URL. Do the same for the &lt;video&gt; tag. For example, if it says <em>src=&quot;~/Assets/Picture.png&quot;</em> update it to <em>src=&quot;<a href="http://mystorageaccount.blob.core.windows.net/assets/Picture.png">http://mystorageaccount.blob.core.windows.net/assets/Picture.png</a></em></p>
+<blockquote>
+<p><strong>Note:</strong> The URL is case sensitive.</p>
+</blockquote></li>
+<li><p>Press <strong>F5</strong> to run the application.</p></li>
+<li><p>The static assets will now be accessed using the storage account instead of the environment where your site is deployed. You can right-click the video player and click <strong>Copy Video URL</strong>. Open a new tab and paste in the navigation address. The player will be accessing the video from your storage account directly.</p>
+
+<p><img src="Images/copying-video-url.png?raw=true" alt="Copying Video URL">
+</p>
+
+<p><em>Copying Video URL</em></p></li>
+<li><p>You can verify that the image is being accessed from your storage account by right-clicking on it and selecting <strong>Properties</strong>. The URL will target your storage account.</p>
+
+<p><img src="Images/picture-properties.png?raw=true" alt="Picture properties">
+</p>
+
+<p><em>Displaying Picture Properties</em></p></li>
+</ol>
+
+<p><a name="Exercise2"></a></p>
+
+<h3>Exercise 2: Configuring Endpoint Monitoring</h3>
+
+<p>In this exercise, you will configure endpoint monitoring for your Windows Azure Web Site. Endpoint monitoring configures web tests from geo-distributed locations that test response time and uptime of web URLs. The test performs an HTTP get operation on the web URL to determine the response time and uptime from each location. Each configured location runs a test every five minutes.</p>
+<blockquote>
+<p><strong>Note:</strong> Before switching a web site from the free web site mode to the standard web site mode, you must first remove spending caps in place for your Web Site subscription. For more information on shared and standard mode pricing, see <a href="https://www.windowsazure.com/en-us/pricing/details/">Pricing Details</a>.</p>
+</blockquote>
+<p><a name="Ex2Task1" /></p>
+
+<h4>Task 1 - Enabling endpoint monitoring</h4>
+
+<ol>
+<li><p>Go to the Management Portal and open <strong>Web Sites</strong>. Select the Web site you created in the <strong>Getting Started</strong> section of this lab.</p></li>
+<li><p>Click <strong>Scale</strong> from the top menu.</p></li>
+<li><p>Change the Web site mode to <strong>Standard</strong>.</p>
+
+<p><img src="Images/websites-standard-mode.png?raw=true" alt="websites-standard-mode">
+</p>
+
+<p><em>Changing Web Site Mode to Standard</em></p>
+<blockquote>
+<p><strong>Note:</strong> This feature is only available in <strong>Standard</strong> mode. You can monitor up to 2 endpoints from up to 3 geographic locations.</p>
+</blockquote></li>
+<li><p>Go to the <strong>dashboard page</strong> and click <strong>Configure Web Endpoint Monitoring</strong> link.</p>
+
+<p><img src="Images/websites-configure-endpoint.png?raw=true" alt="websites-configure-endpoint">
+</p>
+
+<p><em>Configuring endpoint monitoring</em></p></li>
+<li><p>Scroll down to the <strong>monitoring</strong> panel and add a new endpoint. Set its name (e.g.: <em>myendpoint</em>) and select 3 different locations from the list. For example: <em>Chicago</em>, <em>Amsterdam</em> and <em>Hong-Kong</em>.</p></li>
+<li><p>Click <strong>Save</strong> on the bottom bar.</p></li>
+<li><p>Click <strong>Monitor</strong> on the top menu.</p>
+
+<p><img src="Images/websites-monitor-menu.png?raw=true" alt="websites-monitor-menu">
+</p>
+
+<p><em>Opening Monitor Section</em></p></li>
+<li><p>Click the <strong>Add Metrics</strong> button from the bottom bar.</p>
+
+<p><img src="Images/add-metrics-menu.png?raw=true" alt="add-metrics-menu">
+</p>
+
+<p><em>Adding Metrics</em></p></li>
+<li><p>On the <strong>Choose Metrics</strong> dialog box, click <strong>Endpoints</strong>.</p>
+
+<p><img src="Images/websites-monitor-endpoint.png?raw=true" alt="websites-monitor-endpoint">
+</p>
+
+<p><em>Choosing Endpoint Metrics</em></p></li>
+<li><p>Select the 3 <strong>Response Time</strong> metrics for each location and click the check button to continue.</p>
+
+<p><img src="Images/websites-endpoints-metrics.png?raw=true" alt="websites-endpoints-metrics">
+</p>
+
+<p><em>Selecting Endpoint Locations</em></p>
+
+<p>The metrics will be displayed in the table below the chart.</p>
+
+<p><img src="Images/websites-endpoints-table.png?raw=true" alt="websites-endpoints-table">
+</p>
+
+<p><em>Displaying Metrics Values</em></p></li>
+</ol>
+
+<p><a name="Exercise3"></a></p>
+
+<h3>Exercise 3: Setting up Auto-Scaling for your Site</h3>
+
+<p>In this exercise, you will enable auto scaling for your Windows Azure Web Site. You can configure the Web site to auto scale when the CPU reaches a target percentage, automatically increasing the instance count. You can configure the minimum and maximum number of instances.</p>
+
+<p><a name="Ex3Task1" /></p>
+
+<h4>Task 1 - Enabling Auto-Scaling</h4>
+
+<ol>
+<li><p>In the Management Portal, go to your Web Site and click <strong>Scale</strong> from the top menu.</p></li>
+<li><p>In order to enable auto-scale, make sure your Web site <strong>mode</strong> is configured as <strong>Standard</strong>.</p>
+
+<p><img src="Images/websites-standard-mode.png?raw=true" alt="websites-standard-mode">
+</p></li>
+<li><p>Go to the <strong>capacity</strong> section and select <em>CPU</em> from the <strong>Autoscale</strong> options. This enables auto scaling using CPU as a target. </p></li>
+<li><p>From the instance count slider, select the minimum and maximum instances that you want to target for your Web site. Change the target CPU range in order to increase or decrease the number of running instances. This automatically adds or removes an instance when the threshold is reached.</p>
+<blockquote>
+<p><strong>Note:</strong> Windows Azure checks the CPU of your web site once every five minutes and adds instances as needed at that point in time. If CPU usage is low, Windows Azure will remove instances once every two hours to ensure that your website remains performant. Generally, putting the minimum instance count at 1 is appropriate. However, if you have sudden usage spikes on your web site, be sure that you have a sufficient minimum number of instances to handle the load. </p>
+</blockquote>
+<p><img src="Images/websites-automatically-scaling.png?raw=true" alt="websites-automatically-scaling">
+</p>
+
+<p><em>Automatically scaling your Web Site</em></p></li>
+<li><p>Click the <strong>Save</strong> button from the bottom bar to save the settings.</p></li>
+</ol>
+
+<hr>
+
+<p><a name="summary"></a></p>
+
+<h2>Summary</h2>
+
+<p>By completing this hands-on lab you learned the following:</p>
+
+<ul>
+<li>Moving static assets from your Web site to Windows Azure Storage.</li>
+<li>Configure endpoint monitoring to measure the availability and response time of your deployed Web site from different locations.</li>
+<li>Configure Auto-Scaling for Windows Azure Web Sites by changing the range of CPU target and the instance count.</li>
+</ul>

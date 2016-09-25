@@ -1,0 +1,290 @@
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>AzureReadiness: DevCamp</title>
+	  <link rel="stylesheet" href="../../style.css">
+   </head>
+   <body>
+      <div class="container">
+        <header class="navbar navbar-static-top bs-docs-nav" id="top" role="banner">
+            <div class="navbar-header">
+              <a class="navbar-brand" href="../../README.htm">Home</a>
+            </div>
+        </header>
+        <div class="jumbotron"><h1 id="web-demos">Web Demos</h1></div>
+<blockquote>
+<p>Note: These demos are verified with VS 2015 Community edition with Update 1 and Azure SDK for .Net 2.8.1</p>
+</blockquote>
+<h2 id="demo-1-creating-a-web-app">Demo 1 - Creating a Web App</h2>
+<p>This is a quick demo showing how quickly you can create a new Web App in the portal. Feel free to change alter this first demo.</p>
+<ol>
+<li><p>Browse to the <a href="https://portal.azure.com">Azure Portal</a></p>
+</li>
+<li><p>Click New / Web + Mobile / Web App.</p>
+</li>
+<li><p>Enter a unique name in the URL field and click the Create button.</p>
+</li>
+<li><p>While the site is being created, explain that Azure is provisioning a new Web App for you with supporting services, monitoring, support for continuous deployment, etc.</p>
+<blockquote>
+<p>Note: This generally takes 30 - 60 seconds. During this time, you can ask them how long it would take their IT department or hosting provider to provision a new site for them. This is usually enough time for the new Web App to be created.</p>
+</blockquote>
+</li>
+<li><p>When the site comes up, scroll through the various features (Monitoring, Usage, Operations, Deployment, Networking) explaining that these are all live and have been provisioned with the Web App. You can click on the <em>settings</em> option to bring up the <em>settings</em> blade.</p>
+<blockquote>
+<p>Note: If these tiles are not visible, you can add them by clicking on &#39;Add tiles&#39; button and add Deployment, Operations, Usage etc.</p>
+</blockquote>
+</li>
+<li><p>Click on the Browse button. When the default landing page loads, point out that the page illustrates the different options for publishing to the new site, including Git, FTP, Visual Studio, etc.</p>
+</li>
+<li><p>Back in the portal, Under &#39;General&#39; option select &#39;Application settings&#39;. Show that .NET, PHP, Python and Java are all shown.</p>
+</li>
+</ol>
+<h2 id="demo-2-webjobs">Demo 2 - WebJobs</h2>
+<p>This sample demonstrates creating a WebJob and performing operations with Microsoft Azure WebJobs SDK. In this sample, the Program class starts the JobHost and creates the demo data. The Functions class contains methods that will be invoked when messages are placed on the queues and tables, based on the attributes in the method headers.</p>
+<ol>
+<li><p>Go to <a href="http://portal.azure.com">http://portal.azure.com</a> and provision a new free Web App.  </p>
+<blockquote>
+<p>Note: You can use the Web App you provisioned in the first demo here.</p>
+</blockquote>
+</li>
+<li><p>In Visual Studio, go to File -&gt; New -&gt; Project and navigate to Visual C# -&gt; Cloud -&gt; QuickStarts -&gt; Select &quot;Azure WebJobs SDK: Tables&quot;</p>
+</li>
+<li><p>Select the name and location for the project and click &quot;ok&quot;.</p>
+</li>
+<li><p>Open the project in Visual Studio, and compile (to download all the packages required inside bin directory)</p>
+</li>
+<li><p>Enter a storage account name and key as instructed in App.config.</p>
+</li>
+<li><p>Right-click project, select &quot; Publish as Azure WebJob..&quot; and then select &quot;run on-demand&quot; from the dropdown.</p>
+</li>
+<li><p>Select &quot;Microsoft Azure App Service&quot; and Click Next.</p>
+</li>
+<li><p>Select the relevant subscription/ resource group and web app.</p>
+</li>
+<li><p>Modify any details that you want here and click &quot;Publish&quot;.</p>
+</li>
+<li><p>Find the WebJob under the Web App node in Server Explorer, right-click and select run.</p>
+</li>
+<li><p>Find the storage account in Server Explorer and show the results in queue(textinput) and table(words).</p>
+</li>
+<li><p>Show how to run the WebJob from the Wep App&#39;s WebJob setting blade in the portal. Show the log of successful runs.</p>
+</li>
+</ol>
+<h2 id="demo-3-creating-an-api-app">Demo 3 - Creating an API App</h2>
+<p>This is a quick demo showing how quickly you can create a new API App using Visual Studio.</p>
+<ol>
+<li><p>Create a new <strong>ASP.NET Web Application</strong> project using Visual Studio with the name <strong>ProductsApp</strong></p>
+</li>
+<li><p>Select the <strong>Azure API App (Preview)</strong> project template</p>
+</li>
+<li><p>Add a Contact class to the project with the name <strong>Product.cs</strong></p>
+</li>
+<li><p>Add the following code to the contact class:</p>
+<pre><code> namespace ProductsApp.Models
+ {
+     public class Product
+     {
+         public int Id { get; set; }
+         public string Name { get; set; }
+         public string Category { get; set; }
+         public decimal Price { get; set; }
+     }
+ }
+</code></pre></li>
+<li><p>Delete the <strong>ValuesController.cs</strong> file in the <strong>Controllers</strong> folder.</p>
+</li>
+<li><p>Add a new Empty Controller to the Web API project using the Default Scaffolding and the name <strong>ProductsController.cs</strong></p>
+</li>
+<li><p>Add the following code to the controller</p>
+<pre><code> using ProductsApp.Models;
+ using System;
+ using System.Collections.Generic;
+ using System.Linq;
+ using System.Net;
+ using System.Web.Http;
+
+ namespace ProductsApp.Controllers
+ {
+     public class ProductsController : ApiController
+     {
+                 List&lt;Product&gt; products = new List&lt;Product&gt;
+         {
+             new Product { Id = 1, Name = &quot;Tomato Soup&quot;, Category = &quot;Groceries&quot;, Price = 1 },
+             new Product { Id = 2, Name = &quot;Yo-yo&quot;, Category = &quot;Toys&quot;, Price = 3.75M },
+             new Product { Id = 3, Name = &quot;Hammer&quot;, Category = &quot;Hardware&quot;, Price = 16.99M }
+         };
+
+         public IEnumerable&lt;Product&gt; GetAllProducts()
+         {
+             return products;
+         }
+
+         public IHttpActionResult GetProduct(int id)
+         {
+             var product = products.FirstOrDefault((p) =&gt; p.Id == id);
+             if (product == null)
+             {
+                 return NotFound();
+             }
+             return Ok(product);
+         }
+     }
+ }
+</code></pre></li>
+<li><p>Deploy the application to a new API App instance in Azure</p>
+<blockquote>
+<p>Ensure that the Access Level is set to <strong>Available to Everyone</strong></p>
+</blockquote>
+</li>
+<li><p>Open <strong>Internet Explorer</strong> and navigate to <strong><a href="https://www.hurl.it/readme.htm">https://www.hurl.it/</a></strong></p>
+</li>
+<li><p>In the <strong>Destination</strong> textbox, add the URL for your API app with the relative url <strong>/api/Products</strong> appended to the end</p>
+<blockquote>
+<p>Ensure that you use the https scheme. <code>https://[API App Name].azurewebsites.net/api/Products</code></p>
+</blockquote>
+</li>
+<li><p>Click <strong>Launch Request</strong></p>
+</li>
+<li><p>Leave the project in Visual Studio open for future demos</p>
+</li>
+</ol>
+<h2 id="demo-4-basic-mobile-app-with-validation">Demo 4 - Basic Mobile App with Validation</h2>
+<p>Create a .NET backend using the Azure portal</p>
+<p>You can create a new mobile application right in the <a href="https://portal.azure.com/readme.htm"><em>Azure portal</em></a>. You can either follow the steps below, or create a new client and server together by following the <a href="https://azure.microsoft.com/en-us/documentation/articles/app-service-mobile-ios-get-started/readme.htm"><em>Create a mobile app</em></a> tutorial.</p>
+<ol>
+<li><p>Log into the <a href="https://portal.azure.com/readme.htm"><em>Azure Portal</em></a>.</p>
+</li>
+<li><p>In the top left of the window, click the <strong>+NEW</strong> button &gt; <strong>Web + Mobile</strong> &gt; <strong>Mobile App</strong>, then provide a name for your Mobile App backend.</p>
+</li>
+<li><p>In the <strong>Resource Group</strong> box, select an existing resource group. If you have no resource groups, enter the same name as your app.</p>
+<p> At this point, the default App Service plan is selected, which is in the Free tier. The App Service plan settings determine the location, features, cost and compute resources associated with your app. You can either select another App Service plan or create a new one. For more about App Services plans and how to create a new plan, see <a href="https://azure.microsoft.com/en-us/documentation/articles/azure-web-sites-web-hosting-plans-in-depth-overview/readme.htm"><em>Azure App Service plans in-depth overview</em></a></p>
+</li>
+<li><p>Use the default App Service plan, select a different plan or <a href="https://azure.microsoft.com/en-us/documentation/articles/azure-web-sites-web-hosting-plans-in-depth-overview/#create-an-app-service-plan/readme.htm"><em>create a new plan</em></a>, then click <strong>Create</strong>.</p>
+<p> This creates the Mobile App backend. Later you will deploy your server project to this backend. Provisioning a Mobile App backend can take several minutes; the <strong>Settings</strong> blade for the Mobile App backend is displayed when complete. Before you can use the Mobile App backend, you must also define a connection a data store.</p>
+<blockquote>
+<p>NOTE:
+As part of this tutorial, you create a new SQL Database instance and server. You can reuse this new database and administer it as you would any other SQL Database instance. If you already have a database in the same location as the new mobile app backend, you can instead choose <strong>Use an existing database</strong> and then select that database. The use of a database in a different location is not recommended because of additional bandwidth costs and higher latencies. Other data storage options are available.</p>
+</blockquote>
+</li>
+<li><p>In the <strong>Settings</strong> blade for the new Mobile App backend, click <strong>Quick start</strong> &gt; your client app platform &gt; <strong>Connect a database</strong>. </p>
+<p> <img class="img-responsive"src="images/connect-a-database.png" alt=""></p>
+</li>
+<li><p>In the <strong>Add data connection</strong> blade, click <strong>SQL Database</strong> &gt; <strong>Create a new database</strong>, type the database <strong>Name</strong>, choose a pricing tier, then click <strong>Server</strong>.</p>
+<p> <img class="img-responsive"src="images/new-database.png" alt=""></p>
+</li>
+<li><p>In the <strong>New server</strong> blade, type a unique server name in the <strong>Server name</strong> field, provide a secure <strong>Server admin login</strong> and <strong>Password</strong>, make sure that <strong>Allow azure services to access server</strong> is checked, then click <strong>OK</strong> twice. This creates the new database and server.</p>
+</li>
+<li><p>Back in the <strong>Add data connection</strong> blade, click <strong>Connection string</strong>, type the login and password values for your database, then click <strong>OK</strong> twice.</p>
+<p> Creation of the database can take a few minutes. Use the <strong>Notifications</strong> area to monitor the progress of the deployment. You cannot continue until the database has been deployed successfully.</p>
+</li>
+<li><p>Back in the <em>Quick Start</em> blade, under <strong>Create a table API</strong>, choose <strong>C#</strong> as your <strong>Backend language</strong></p>
+</li>
+<li><p>Click Download, extract the compressed project files to your local computer, and open the solution in Visual Studio.</p>
+</li>
+</ol>
+<h3 id="configure-the-server-project">Configure the server project</h3>
+<ol>
+<li><p>Back in the Mobile App backend settings, click <strong>Quick Start</strong> &gt; your client platform.</p>
+</li>
+<li><p>Under <strong>Create a table API</strong>, select <strong>C#</strong> as your <strong>Backend language</strong>,</p>
+</li>
+<li><p>Click <strong>Download</strong>, extract the compressed project files to your local computer, open the solution in Visual Studio, build the project to restore the NuGet packages, then deploy the project to Azure. To learn how to deploy a .NET backend server project to Azure, see <a href="https://azure.microsoft.com/en-us/documentation/articles/app-service-mobile-dotnet-backend-how-to-use-server-sdk/#publish-server-project/readme.htm">How to: Publish the server project</a> in the .NET backend SDK topic.</p>
+</li>
+</ol>
+<p>You Mobile App backend is now ready to use with your client app.</p>
+<p>###Download and run the client project</p>
+<p>Once you have configured your Mobile App backend, you can either create a new client app or modify an existing app to connect to Azure. In this section, you download a universal Windows app template project that is customized to connect to your Mobile App backend.</p>
+<ol>
+<li><p>Back in the <strong>Quick Start</strong> blade for your Mobile App backend, click <strong>Create a new app</strong> &gt; <strong>Download</strong>, then extract the compressed project files to your local computer.</p>
+</li>
+<li><p>(Optional) Add the universal Windows app project to the solution with the server project. This makes it easier to debug and test both the app and the backend in the same Visual Studio solution, if you choose to do so.</p>
+</li>
+<li><p>With the Windows Store app as the startup project, press the F5 key to rebuild the project and start the Windows Store app.</p>
+</li>
+<li><p>In the app, type meaningful text, such as <em>Complete the tutorial</em>, in the <strong>Insert a TodoItem</strong> text box, and then click <strong>Save</strong>.</p>
+<p> <img class="img-responsive"src="images/bs-demo-mobileapp.png" alt=""></p>
+</li>
+</ol>
+<p>This sends a POST request to the new mobile app backend that&#39;s hosted in Azure.</p>
+<ol>
+<li>Stop debugging, right-click the <code>_your app name_.WindowsPhone</code> project, click <strong>Set as StartUp Project</strong>, and then press F5 again.</li>
+</ol>
+<p>Notice that data saved from the previous step is loaded from the mobile app after the Windows app starts.</p>
+<p>###Add Server Side Validation</p>
+<ol>
+<li><p>Switch to Visual Studio solution that contains the mobile service project.</p>
+</li>
+<li><p>In the Solution Explorer window expand the todo list service project and expand <strong>Controllers</strong>. Open the <em>TodoItemController.cs</em> file which is part of the mobile service project.</p>
+</li>
+<li><p>Replace the PostTodoItem method with the following method which will validate that the text string is not greater than 10 characters. For items that do have a text length greater than 10 characters, the method returns an HTTP Status code 400 Bad Request with a descriptive message included as content.</p>
+<pre><code> public async Task&lt;IHttpActionResult&gt; PostTodoItem(TodoItem item) 
+ {
+     if (item.Text.Length &lt; 5)
+     {
+         return BadRequest(&quot;The Item&#39;s Text length must be greater than 5.&quot;);
+     }
+     else 
+     {
+         TodoItem current = await InsertAsync(item);
+         return CreatedAtRoute(&quot;Tables&quot;, new { id = current.Id }, current);
+
+     }
+ }
+</code></pre></li>
+<li><p>Right click the service project and click Build to build the mobile service project. Verify no errors occurred.</p>
+</li>
+<li><p>Right click the service project and click Publish.</p>
+</li>
+</ol>
+<p>###Update the Client</p>
+<p>Now that the mobile service is setup to validate data and send error responses for an invalid text length, you need to update your app to be able to handle error responses from validation. The error will be caught as a <em>MobileServiceInvalidOperationException</em> from the client app&#39;s call to <em>IMobileServiceTable&lt;TodoItem].InsertAsync()</em>.</p>
+<ol>
+<li><p>In the Solution Explorer window in Visual Studio, navigate to the client project and open the MainPage.xaml.cs file. Add the following using statement in that file:</p>
+<pre><code> using Windows.UI.Popups;
+ using Newtonsoft.Json.Linq;
+</code></pre></li>
+<li><p>In <strong>MainPage.xaml.cs</strong> replace the existing <strong>InsertTodoItem</strong> method with the following code:</p>
+<pre><code> private async void InsertTodoItem(TodoItem todoItem)
+ {
+     // This code inserts a new TodoItem into the database. When the operation completes
+     // and Mobile Services has assigned an Id, the item is added to the CollectionView MobileServiceInvalidOperationException invalidOpException = null;
+     try
+     {
+         await todoTable.InsertAsync(todoItem);
+         items.Add(todoItem);
+     }
+     catch(MobileServiceInvalidOperationException e)
+     {
+         invalidOpException = e;
+     }
+     if (invalidOpException != null)
+     {
+         string strJsonContent = await invalidOpException.Response.Content.ReadAsStringAsync();
+         var responseContent = JObject.Parse(strJsonContent);
+         MessageDialog errormsg = new MessageDialog(string.Format(&quot;{0} (HTTP {1})&quot;, (string)responseContent[&quot;message&quot;],(int)invalidOpException.Response.StatusCode), invalidOpException.Message);
+         var ignoreAsyncOpResult = errormsg.ShowAsync();
+     }
+ }
+</code></pre></li>
+</ol>
+<p>This version of the method includes error handling for the <strong>MobileServiceInvalidOperationException</strong> that displays the deserialized error message from the response content in a message dialog.</p>
+<h3 id="test-length-validation">Test Length Validation</h3>
+<ol>
+<li><p>In Solution Explorer in Visual Studio, right click the client app project and then click <strong>Set as StartUp Project</strong>. Then press the <strong>F5</strong> key to start the app hosting the service locally in IIS Express.</p>
+</li>
+<li><p>Enter the text for a new todo item with a length less than 5 characters and then click <strong>Save</strong>.</p>
+</li>
+<li><p>You will get a message dialog similar to the following in response to the invalid text.</p>
+</li>
+</ol>
+<p><img class="img-responsive"src="images/output.png" alt=""></p>
+<h2 id="demo-4-basic-mobile-app-with-validation">Demo 4 - Basic Mobile App with Validation</h2>
+<p>Logic Apps allow developers to design workflows that start from a trigger and then execute a series of steps. Each step invokes an App Service API app whilst securely taking care of authentication and best practices, like checkpointing and durable execution.</p>
+<p>If you want to automate any business process (e.g. find negative tweets and post to your internal slack channel or replicate new customer records from SQL, as they arrive, into your CRM system), Logic Apps makes integrating disparate data sources, from cloud to on-premises easy.</p>
+<p>You can create a demo by utilizing &quot;Twitter connector&quot; and &quot;Dropbox connector&quot; from marketplace by following the instructions from this <a href="https://azure.microsoft.com/en-us/documentation/articles/app-service-logic-create-a-logic-app/readme.htm">logic app tutorial</a>.</p>
+
+      </div>
+  </body>
+</html>

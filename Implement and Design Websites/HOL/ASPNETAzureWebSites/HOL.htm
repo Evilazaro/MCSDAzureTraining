@@ -1,0 +1,498 @@
+<p><a name="Title"></a></p>
+
+<h1>Building and Publishing ASP.NET Applications with Windows Azure Web Sites</h1>
+
+<hr>
+
+<p><a name="Overview"></a></p>
+
+<h2>Overview</h2>
+
+<p>Web site publication and deployment has never been easier in Windows Azure. Using familiar tools such as Web Deploy or Git, and virtually no changes to the development workflow, Windows Azure Web Sites is the next step in the Microsoft Azure platform for web developers. </p>
+
+<p>In this hands-on lab, you will explore the basic elements of the <strong>Windows Azure Web Sites</strong> service by creating a simple <strong>ASP.NET MVC 5</strong> application, which uses scaffolding to automatically generate the baseline of your application's CRUD (Create, Read, Update and Delete). Then, you will deploy it using Web Deploy from Microsoft Visual Studio and finally, you will enable source control and use Git to publish directly from your local computer.</p>
+
+<p>Starting from a simple model class and without writing a single line of code, you will create a controller that will contain all the CRUD operations, as well as all the necessary views. After publishing and running the solution, you will have the model generated in your SQL Database, together with the MVC logic and views for data manipulation.</p>
+
+<p><a name="Objectives"></a></p>
+
+<h3>Objectives</h3>
+
+<p>In this hands-on lab, you will learn how to:</p>
+
+<ul>
+<li>Create a Windows Azure Web Site with Microsoft Visual Studio 2013</li>
+<li>Use Microsoft Visual Studio 2013 to build a new ASP.NET MVC 5 application</li>
+<li>Deploy an ASP.NET application to Windows Azure Web Sites using Web Deploy from Visual Studio</li>
+<li>Configure a Windows Azure Web Site with Git Repository enabled to publish an ASP.NET MVC 5 application using Git</li>
+</ul>
+
+<p><a name="Prerequisites"></a></p>
+
+<h3>Prerequisites</h3>
+
+<p>The following is required to complete this hands-on lab:</p>
+
+<ul>
+<li><p><a href="http://www.microsoft.com/visualstudio/">Visual Studio Express 2013 for Web</a> or greater</p></li>
+<li><p><a href="http://www.microsoft.com/windowsazure/sdk/">Windows Azure Tools for Microsoft Visual Studio 2.2 (or later)</a></p></li>
+<li><p>A Windows Azure subscription</p>
+
+<ul>
+<li>Sign up for a <a href="http://aka.ms/watk-freetrial">Free Trial</a></li>
+<li>If you are a Visual Studio Professional, Test Professional, Premium or Ultimate with MSDN or MSDN Platforms subscriber, activate your <a href="http://aka.ms/watk-msdn">MSDN benefit</a> now to start developing and testing on Windows Azure.</li>
+<li><a href="http://aka.ms/watk-bizspark">BizSpark</a> members automatically receive the Windows Azure benefit through their Visual Studio Ultimate with MSDN subscriptions.</li>
+<li>Members of the <a href="http://aka.ms/watk-mpn">Microsoft Partner Network</a> Cloud Essentials program receive monthly credits of Windows Azure at no charge.</li>
+</ul></li>
+</ul>
+
+<hr>
+
+<p><a name="Exercises"></a></p>
+
+<h2>Exercises</h2>
+
+<p>This hands-on lab includes the following exercises:</p>
+
+<ul>
+<li><a href="#Exercise1">Creating a Windows Azure Web Site with Visual Studio</a></li>
+<li><a href="#Exercise2">Creating an MVC 5 Application with Entity Framework</a></li>
+<li><a href="#Exercise3">Publishing an MVC 5 Application using Web Deploy</a></li>
+<li><a href="#Exercise4">Publishing an MVC 5 Application using Git</a></li>
+</ul>
+
+<p><a name="Exercise1"></a></p>
+
+<h3>Exercise 1: Creating a Windows Azure Web Site with Visual Studio</h3>
+
+<p>In this exercise, you will take advantage of the Windows Azure tools for Visual Studio to create a Windows Azure Web Site. Through <strong>Server Explorer</strong>, you will connect to Windows Azure by signing in with your Microsoft Account and then create a Windows Azure Web Site and its associated SQL database.</p>
+
+<h4>Task 1 – Adding a New Windows Azure Web Site from Server Explorer</h4>
+
+<ol>
+<li><p>Open <strong>Microsoft Visual Studio Express 2013 For Web</strong> and then open <strong>Server Explorer</strong> by selecting <strong>View | Server Explorer</strong>.</p></li>
+<li><p>In <strong>Server Explorer</strong>, right-click the <strong>Windows Azure</strong> node and select <strong>Connect to Windows Azure...</strong>. Sign in using the Microsoft account associated with your Windows Azure account.</p>
+
+<p><img src="Images/connect-to-windows-azure.png?raw=true" alt="Connect to Windows Azure">
+</p>
+
+<p><em>Connect to Windows Azure</em></p></li>
+<li><p>After sign in, the <strong>Windows Azure</strong> node is populated with the resources in your Windows Azure subscription.</p></li>
+<li><p>Expand the <strong>Windows Azure</strong> node, right-click the <strong>Web Sites</strong> node and select <strong>Add New Site...</strong>.</p>
+
+<p><img src="Images/add-new-website.png?raw=true" alt="Add new site">
+</p>
+
+<p><em>Add new site</em></p></li>
+<li><p>In the <strong>Create site on Windows Azure</strong> dialog box, provide the following information:</p>
+
+<ul>
+<li>In the <strong>Site name</strong> box, enter an available name for the Web site.</li>
+<li>In the <strong>Location</strong> drop-down list, select the region for the Web site. This setting specifies which data center your Web site will run in.</li>
+<li>In the <strong>Database server</strong> drop-down list, select <strong>Create new server</strong>. Alternatively, you can select an existing SQL Server.</li>
+<li>In the <strong>Database username</strong> and <strong>Database password</strong> boxes, enter the administrator username and password for the SQL Server. If you select a SQL Server you have already created, you will be prompted for the password.</li>
+</ul></li>
+<li><p>Click <strong>Create</strong> to create the Web site.</p>
+
+<p><img src="Images/create-site-on-windows-azure.png?raw=true" alt="Create site on Windows Azure">
+</p>
+
+<p><em>Create site on Windows Azure</em></p></li>
+<li><p>Wait for the new Web site to be created.</p>
+<blockquote>
+<p><strong>Note:</strong> By default, Windows Azure provides domains at <em>azurewebsites.net</em> but also gives you the possibility to set custom domains using the Windows Azure Management Portal (right-click your Web site from Server Explorer and select <strong>Open Management Portal</strong>). However, you can only manage custom domains if you are using certain Web site modes.</p>
+
+<p>Windows Azure offers 3 modes for users to run their Web sites - Free, Shared, and Standard. In Free and Shared mode, all Web sites run in a multi-tenant environment and have quotas for CPU, Memory, and Network usage. You can mix and match which sites are Free (strict quotas) vs. Shared (more flexible quotas). The maximum number of free sites may vary with your plan. In Standard mode, you choose which sites run on dedicated virtual machines that correspond to the standard Azure compute resources. You can find the Web Sites Mode configuration in the <strong>Scale</strong> menu of your Web site.</p>
+
+<p><img src="Images/web-site-modes.png?raw=true" alt="Web Site Modes" title="Web Site Modes">
+</p>
+
+<p>If you are using <strong>Shared</strong> or <strong>Standard</strong> mode, you will be able to manage custom domains for your Web site by going to your Web site’s <strong>Configure</strong> menu and clicking <strong>Manage Domains</strong> under <em>domain names</em>.</p>
+
+<p><img src="Images/manage-domains.png?raw=true" alt="Manage Domains" title="Manage Domains">
+</p>
+
+<p><img src="Images/manage-custom-domains.png?raw=true" alt="Manage Custom Domains" title="Manage Custom Domains">
+</p>
+</blockquote></li>
+<li><p>Once the Web site is created, it will be displayed in Server Explorer under the <strong>Web Sites</strong> node. Right-click the new Web site and select <strong>Open in Browser</strong> to check that the Web site is running.</p>
+
+<p><img src="Images/browsing-to-the-new-web-site.png?raw=true" alt="Browsing to the new web site">
+</p>
+
+<p><em>Browsing to the new Web site</em></p>
+
+<p><img src="Images/website-working.png?raw=true" alt="Web site running" title="Web site running">
+</p>
+
+<p><em>Web site running</em></p></li>
+</ol>
+
+<p><a name="Exercise2"></a></p>
+
+<h3>Exercise 2: Creating an MVC 5 Application with Entity Framework</h3>
+
+<p>In this exercise, you will create a simple ASP.NET MVC 5 web application, using ASP.NET scaffolding with Entity Framework to create the CRUD methods.</p>
+
+<p><a name="GettingStartedTask1"></a></p>
+
+<h4>Task 1 – Creating an ASP.NET MVC 5 Application in Visual Studio</h4>
+
+<ol>
+<li><p>In <strong>Microsoft Visual Studio Express 2013 For Web</strong>, click the <strong>New Project...</strong> link in the start page or use <strong>File</strong> | <strong>New Project...</strong>.</p>
+
+<p><img src="Images/creating-a-new-project.png?raw=true" alt="Creating a new project">
+</p>
+
+<p><em>Creating a new project</em></p></li>
+<li><p>Create a new <strong>ASP.NET Web Application</strong> using <strong>.NET Framework 4.5</strong>, <strong>C#</strong> and name it <strong>MVCSample.Web</strong>. Click <strong>OK</strong> to continue.</p>
+
+<p><img src="Images/creating-a-new-aspnet-web-application.png?raw=true" alt="Creating a new ASP.NET Web Application">
+</p>
+
+<p><em>Creating a new ASP.NET Web Application</em></p></li>
+<li><p>Select the <strong>MVC</strong> template and make sure that <strong>Authentication</strong> is set to <strong>Individual User Accounts</strong>. Click <strong>OK</strong> to continue.</p>
+
+<p><img src="Images/choosing-mvc-project-template.png?raw=true" alt="Choosing MVC project template">
+</p>
+
+<p><em>Choosing MVC project template</em></p></li>
+<li><p>In the <strong>Solution Explorer</strong>, right-click <strong>Models</strong> and select <strong>Add | Class...</strong> to create a customer class (POCO). Name it <em>Customer.cs</em> and click <strong>Add</strong>.</p></li>
+<li><p>Open the <strong>Customer</strong> class and insert the following properties.</p>
+
+<!-- mark:10-24 -->
+
+<pre><code class="C#">using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace MVCSample.Web.Models
+{
+    public class Customer
+    {
+        public int CustomerId { get; set; }
+
+        public string Name { get; set; }
+
+        public string Phone { get; set; }
+
+        public string Address { get; set; }
+
+        public string Company { get; set; }
+
+        public string Title { get; set; }
+
+        public string Email { get; set; }
+
+        public string Image { get; set; }
+    }
+}
+</code></pre></li>
+<li><p>Build <strong>MVCSample.Web</strong> by using the <strong>Ctrl + Shift + B</strong> keyboard shortcut which will save the changes and build the project.</p></li>
+<li><p>In <strong>Solution Explorer</strong>, right-click the <strong>Controllers</strong> folder and select <strong>Add | Controller...</strong>. </p></li>
+<li><p>In the <strong>Add Scaffold</strong> dialog box, select the <strong>MVC 5 Controller with views, using Entity Framework</strong> scaffolding type and click <strong>Add</strong>.</p>
+
+<p><img src="Images/scaffolding-options.png?raw=true" alt="Choosing scaffolding option">
+</p>
+
+<p><em>Choosing scaffolding option</em></p></li>
+<li><p>Complete the scaffolding options in the <strong>Add Controller</strong> dialog box with the following values.</p>
+
+<ul>
+<li>In the <strong>Controller name</strong> box, type <em>CustomerController</em>.</li>
+<li>Select the <strong>Use async controller actions</strong> checkbox.</li>
+<li>In the <strong>Model class</strong> drop-down list, select the <strong>Customer</strong> class.</li>
+<li>In the <strong>Data Context class</strong> field, click <strong>&lt;New data context...&gt;</strong>. In the dialog box displayed, replace the data context class type with <strong>MVCSample.Web.Models.CustomerContext</strong> and click <strong>OK</strong>.</li>
+<li>In the <strong>Views</strong> section, make sure that all checkboxes are selected.</li>
+</ul>
+
+<p><img src="Images/add-customer-controller.png?raw=true" alt="Adding the Customer controller with scaffolding">
+</p>
+
+<p><em>Adding the Customer controller with scaffolding</em></p></li>
+<li><p>Click <strong>Add</strong> to create the new controller for <strong>Customer</strong> with scaffolding. Visual Studio will then generate the controller actions, Customer data context and the views. </p>
+
+<p><img src="Images/customer-scaffolding.png?raw=true" alt="After creating the Customer controller with scaffolding">
+</p>
+
+<p><em>After creating the Customer controller with scaffolding</em></p></li>
+<li><p>Open the <strong>CustomerController.cs</strong> file in the <strong>Controllers</strong> folder. Notice that the CRUD action methods have been generated automatically. </p>
+<blockquote>
+<p><strong>Note:</strong> By selecting the <strong>Use async controller actions</strong> checkbox from the scaffolding options in the previous steps, Visual Studio generates asynchronous action methods for all actions that involve access to the Customer data context. It is recommended to use asynchronous action methods for long-running, non-CPU bound requests to avoid blocking the Web server from performing work while the request is being processed.</p>
+</blockquote>
+<pre><code class="C#">...
+
+// POST: /Customer/Create
+// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task&lt;ActionResult&gt; Create([Bind(Include=&quot;CustomerId,Name,Phone,Address,Company,Title,Email,Image&quot;)] Customer customer)
+{
+    if (ModelState.IsValid)
+    {
+         db.Customers.Add(customer);
+         await db.SaveChangesAsync();
+         return RedirectToAction(&quot;Index&quot;);
+    }
+
+    return View(customer);
+}
+
+// GET: /Customer/Edit/5
+public async Task&lt;ActionResult&gt; Edit(int? id)
+{
+    if (id == null)
+    {
+         return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+    }
+    Customer customer = await db.Customers.FindAsync(id);
+    if (customer == null)
+    {
+         return HttpNotFound();
+    }
+    return View(customer);
+}
+
+...
+</code></pre>
+
+<p><em>Generated code for the Customer controller</em></p></li>
+</ol>
+
+<p><a name="Exercise3"></a></p>
+
+<h3>Exercise 3: Publishing an MVC 5 Application using Web Deploy</h3>
+
+<p>In this exercise, you will publish the application you obtained in <a href="#Exercise2">Exercise 2</a> to Windows Azure Web Sites by making use of the Web Deploy publishing feature provided by Visual Studio.</p>
+
+<p><a name="Ex3Task1"></a></p>
+
+<h4>Task 1 – Publishing an ASP.NET MVC 5 Application using Web Deploy</h4>
+
+<ol>
+<li><p>Open the solution you obtained in <a href="#Exercise2">Exercise 2</a> with Visual Studio. Alternatively, you can open the <strong>MVCSample.Web</strong> solution located in the <strong>Source\Assets</strong> folder of this lab.</p></li>
+<li><p>In <strong>Solution Explorer</strong>, right-click the Web site project and select <strong>Publish...</strong>.</p>
+
+<p><img src="Images/publishing-the-web-site.png?raw=true" alt="Publishing the web site">
+</p>
+
+<p><em>Publishing the web site</em></p></li>
+<li><p>In the <strong>Profile</strong> page, click <strong>Import...</strong> to import the publish profile.</p>
+
+<p><img src="Images/importing-the-publish-profile.png?raw=true" alt="Importing publish profile">
+</p>
+
+<p><em>Importing publish profile</em></p></li>
+<li><p>In the <strong>Import Publish Settings</strong> dialog box, select the <strong>Import from a Windows Azure Web Site</strong> option. If not already signed in, click the <strong>Sign In...</strong> button and sign in using the Microsoft account associated with your Windows Azure account.</p></li>
+<li><p>Select your Web site from the drop-down list, and then click <strong>OK</strong>.</p>
+
+<p><img src="Images/importing-publish-profile-from-web-site.png?raw=true" alt="Importing publish profile from Web site">
+</p>
+
+<p><em>Importing publish profile from Web site</em></p></li>
+<li><p>In the <strong>Connection</strong> page, leave the imported values and click <strong>Validate Connection</strong>. Once the validation is completed, click <strong>Next</strong>.</p>
+<blockquote>
+<p><strong>Note:</strong> Validation is complete once a green checkmark appears to the right of the <strong>Validate Connection</strong> button.</p>
+</blockquote>
+<p><img src="Images/validating-connection.png?raw=true" alt="Validating connection">
+</p>
+
+<p><em>Validating connection</em></p></li>
+<li><p>In the <strong>Settings</strong> page, under the <strong>Databases</strong> section, click the down arrow in the <strong>CustomerContext</strong> textbox and select the SQL database shown in the drop-down list.</p>
+<blockquote>
+<p><strong>Note:</strong> The SQL Database you just selected was automatically generated when you created the Windows Azure Web Site in <a href="#Exercise1">Exercise 1</a>.</p>
+</blockquote>
+<p><img src="Images/selecting-the-sql-database.png?raw=true" alt="Selecting the SQL Database">
+</p>
+
+<p><em>Selecting the SQL Database</em></p></li>
+<li><p>Click <strong>Next &gt;</strong> and then in the <strong>Preview</strong> page, click <strong>Publish</strong>.</p>
+
+<p><img src="Images/publishing-the-web-application.png?raw=true" alt="Publishing the web application">
+</p>
+
+<p><em>Publishing the web application</em></p></li>
+<li><p>When the publishing process completes, your default browser will open the published Web site. Verify that the Web site was successfully published in Windows Azure.</p>
+
+<p><img src="Images/application-published-to-windows-azure.png?raw=true" alt="Application published to Windows Azure">
+</p>
+
+<p><em>Application published to Windows Azure</em></p>
+<blockquote>
+<p><strong>Note:</strong> If you still see the Windows Azure Web Sites default page, press <strong>F5</strong> to reload the page. </p>
+</blockquote></li>
+<li><p>Go to <strong>/Customer</strong> to verify that the <em>Customers</em> views are working as expected. You can try adding a new Customer to verify it is successfully saved to the database.</p>
+
+<p><img src="Images/customer-view.png?raw=true" alt="Application Running" title="Application Running">
+</p>
+
+<p><em>Customer view</em></p></li>
+</ol>
+
+<p><a name="Exercise4"></a></p>
+
+<h3>Exercise 4: Publishing an MVC 5 Application using Git</h3>
+
+<p>In this exercise you will publish the web application you created in <a href="#Exercise2">Exercise 2</a>, but this time using Git.</p>
+<blockquote>
+<p><strong>Note:</strong> If you did not execute <a href="#Exercise2">Exercise 2</a> you can still perform this exercise by deploying the site located in the <strong>Source\Assets</strong> folder of this lab.</p>
+</blockquote>
+<p><a name="Ex4Task1"></a>  </p>
+
+<h4>Task 1 – Setting up Git Publishing</h4>
+
+<ol>
+<li><p>In Visual Studio, right-click your Web site in <strong>Server Explorer</strong> and select <strong>Open in Management Portal</strong>. Sign in using the Microsoft credentials associated with your subscription.</p>
+
+<p><img src="Images/opening-the-managemen-portal.png?raw=true" alt="Opening the Web Site in Managemen Portal">
+</p>
+
+<p><em>Opening the Web site in Management Portal</em></p></li>
+<li><p>In the <strong>Dashboard</strong> page, click <strong>View connection strings</strong> link under the <strong>quick glance</strong> section.</p>
+
+<p><img src="Images/view-connection-strings.png?raw=true" alt="View connection strings" title="View connection strings">
+</p>
+
+<p><em>View connection strings</em></p></li>
+<li><p>Copy the <strong>connection string</strong> value. You will use it later in this exercise.</p>
+
+<p><img src="Images/connection-string-in-windows-azure-management.png?raw=true" alt="Connection String in Windows Azure Management Portal" title="Connection String in Windows Azure Management Portal">
+</p>
+
+<p><em>Connection String in Windows Azure Management Portal</em></p></li>
+<li><p>Back in the <strong>Dashboard</strong> page, click <strong>Set up deployment from source control</strong> under the <strong>quick glance</strong> section.</p>
+
+<p><img src="Images/set-up-git-publishing.png?raw=true" alt="Set up deployment from source control" title="Set up deployment from source control">
+</p>
+
+<p><em>Set up deployment from source control</em></p></li>
+<li><p>Once the <strong>Set up Deployment</strong> window is displayed, select <strong>Local Git repository</strong> and click <strong>Next</strong>.</p>
+
+<p><img src="Images/selecting-git-source-control.png?raw=true" alt="Set up Git Deployment" title="Set up Git Deployment">
+</p>
+
+<p><em>Set up Git Deployment</em></p></li>
+<li><p>A message indicating that your Git repository is being created will appear. </p>
+<blockquote>
+<p><strong>Note:</strong> You may be prompted for the deployment credentials (a username and password).</p>
+</blockquote>
+<p><img src="Images/creating-git-repository.png?raw=true" alt="Creating Git Repository" title="Creating Git Repository">
+</p>
+
+<p><em>Creating Git repository</em></p></li>
+<li><p>Wait until your Git repository is ready to use before continuing with the following task.</p>
+
+<p><img src="Images/git-repository-ready.png?raw=true" alt="Git repository ready" title="Git repository ready">
+</p>
+
+<p><em>Git repository is ready</em></p></li>
+<li><p>Copy the <strong>Git URL</strong> value. You will use it later in this exercise.</p></li>
+</ol>
+
+<p><a name="Ex4Task2"></a>  </p>
+
+<h4>Task 2 – Pushing the Application to Windows Azure using Git</h4>
+
+<ol>
+<li><p>Open the solution you obtained in <a href="#Exercise1">Exercise 1</a> with Visual Studio. Alternatively, you can open the <strong>MVCSample.Web</strong> solution located in the <strong>Source\Assets</strong> folder of this lab.</p></li>
+<li><p>Press <strong>CTRL + SHIFT + B</strong> to build the solution and download the NuGet package dependencies.</p></li>
+<li><p>Open Web.config and update the <strong>CustomerContext</strong> connection string using the one obtained in the previous task.</p></li>
+<li><p>Open a new <strong>Git Bash</strong> console and insert the following commands. Update the <em>[YOUR-APPLICATION-PATH]</em> placeholder with the path to the MVC solution you created in <a href="#Exercise2">Exercise 2</a>. </p>
+
+<!-- mark:1-6 -->
+
+<pre><code class="CommandPrompt">cd &quot;[YOUR-APPLICATION-PATH]&quot;
+git init
+git config --global user.email &quot;{username@example.com}&quot;
+git config --global user.name &quot;{your-user-name}&quot;
+git add .
+git commit -m &quot;Initial commit&quot;
+</code></pre>
+
+<p><img src="Images/git-initialization-and-first-commit.png?raw=true" alt="Git initialization and first commit" title="Git initialization and first commit">
+</p>
+
+<p><em>Git initialization and first commit</em></p></li>
+<li><p>Push your Web site to the remote <strong>Git</strong> repository by running the following command. Replace the placeholder with the URL you obtained from the <strong>Windows Azure Management Portal</strong>. You will be prompted for your deployment password.</p>
+
+<!-- mark:1-2 -->
+
+<pre><code class="CommandPrompt">git remote add azure [GIT-CLONE-URL]
+git push azure master
+</code></pre>
+
+<p><img src="Images/pushing-to-windows-azure.png?raw=true" alt="Pushing to Windows Azure" title="Pushing to Windows Azure">
+</p>
+
+<p><em>Pushing to Windows Azure</em></p>
+<blockquote>
+<p><strong>Note:</strong> When you deploy content to the FTP host or GIT repository of a Windows Azure website you must authenticate using <strong>deployment credentials</strong> that you create from the Web site’s <strong>Quick Start</strong> or <strong>Dashboard</strong> management pages.  If you do not know your deployment credentials you can easily reset them using the management portal. Open the Web site <strong>Dashboard</strong> page and click the <strong>Reset your deployment credentials</strong> link. Provide a new password and click <strong>OK</strong>. Deployment credentials are valid for use with all Windows Azure Web sites associated with your subscription. </p>
+</blockquote></li>
+<li><p>In order to verify the Web site was successfully pushed to Windows Azure, go back to the <strong>Windows Azure Management Portal</strong> and click <strong>Web Sites</strong>.</p></li>
+<li><p>Locate your <strong>Web Site</strong> (where you deployed the application) and click its <strong>Name</strong> to see the <strong>Dashboard</strong>.</p></li>
+<li><p>Click <strong>Deployments</strong> to see the <strong>deployment history</strong>. Verify that there is an <strong>Active Deployment</strong> with your <em>&quot;Initial Commit&quot;</em>.</p>
+
+<p><img src="Images/deployment.png?raw=true" alt="Deployment" title="Deployment">
+</p>
+
+<p><em>Active deployment</em></p></li>
+<li><p>Finally, click <strong>Browse</strong> on the bottom bar to go to the Web site. </p>
+
+<p><img src="Images/browse-web-site.png?raw=true" alt="Browse web site" title="Browse web site">
+</p>
+
+<p><em>Browse Web site</em></p></li>
+<li><p>If the application was successfully deployed, you will see the ASP.NET MVC 5 template's default home page.</p>
+
+<p><img src="Images/application-published-to-windows-azure.png?raw=true" alt="Application Running in Windows Azure" title="Application Running in Windows Azure">
+</p>
+
+<p><em>Application Running in Windows Azure</em></p></li>
+<li><p>Go to <strong>/Customer</strong> to verify that the Customer views are working as expected. You can try adding a new Customer to verify it is successfully saved to the database.</p>
+
+<p><img src="Images/customer-view.png?raw=true" alt="Customer view">
+</p>
+
+<p><em>Add Customer view</em></p></li>
+</ol>
+
+<hr>
+
+<p><a name="NextSteps"></a></p>
+
+<h2>Next Steps</h2>
+
+<p>To learn more about Windows Azure Web Sites, please refer to the following articles:</p>
+
+<p><strong>Technical Reference</strong></p>
+
+<p>This is a list of articles that expand on the technologies explained on this lab:</p>
+
+<ul>
+<li><a href="http://aka.ms/Alwcgu">Windows Azure Web Sites Documentation</a>: provides reference information for developing your site with .NET, PHP, Node.js or Python and hosting in Windows Azure Web Sites</li>
+<li><a href="http://aka.ms/Y42duf">Get Better Acquainted with Azure</a>: gives a wide range of resources to continue learning about Windows Azure including blogs, Twitter accounts, forums, books and courses</li>
+<li><a href="http://aka.ms/Nocpe8">Windows Azure Web Sites, Cloud Services, and VMs: When to use which?</a>: provides guidance on how to make an informed decision when choosing among Windows Azure Web Sites, Cloud Services, and virtual machines to host a web application</li>
+<li><a href="http://aka.ms/Kuynic">Create a Line-of-Business Application on Windows Azure Web Sites</a>: provides a technical overview of how to use Windows Azure Web Sites to create line-of-business applications</li>
+</ul>
+
+<p><strong>Development</strong></p>
+
+<p>This is a list of developer-oriented articles related to Windows Azure Web Sites:</p>
+
+<ul>
+<li><a href="http://aka.ms/Odtcqj">How to Use ASP.NET Session State with Windows Azure Web Sites</a>: explains how to use the Windows Azure Cache Service to support ASP.NET session state caching</li>
+<li><a href="http://aka.ms/B68rqv">Publishing from Source Control to Windows Azure Web Sites</a>: shows how to use Git to publish to a Windows Azure Web Site using your local repository as well as with Web sites like BitBucket, CodePlex, DropBox, or GitHub</li>
+<li><a href="http://aka.ms/Aovqr1">How to Monitor Web Sites</a>: guides you through implementing and monitoring performance statistics for Windows Azure Web Sites</li>
+<li><a href="http://aka.ms/E9g0c1">Windows Azure Web Sites – Exploring the platform (Video)</a>: shows you more about building a web application, understanding options for deployment, and setting up continuous integration</li>
+<li><a href="http://aka.ms/H5il2o">Windows Azure Web Sites: Under the Hood (Video)</a>: shows you how new Web sites are provisioned, how incoming requests are routed and serviced, and what actually happens when it is time to scale your Web site - both out and up</li>
+</ul>
+
+<hr>
+
+<p><a name="Summary"></a></p>
+
+<h2>Summary</h2>
+
+<p>In this hands-on lab, you have created a new MVC Web site using MVC 5 Scaffolding and published it to Windows Azure Web Sites. Web site publication and deployment has never been easier in Windows Azure. Using familiar tools such as Web Deploy or Git, and virtually no changes to the development workflow, Windows Azure Web Sites is the next step in the Microsoft Azure platform for web developers. </p>

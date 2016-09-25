@@ -1,0 +1,215 @@
+<p><a name="title" /></p>
+
+<h1>Windows Azure Web Sites (PaaS)</h1>
+
+<hr>
+
+<p><a name="Overview" /></p>
+
+<h2>Overview</h2>
+
+<p>In this demo, you will learn how to use Microsoft WebMatrix 2 to quickly build and publish Web sites in Windows Azure.  You do not need to be a developer in order to do this and it will help to illustrate the difference between Windows Azure IaaS and PaaS as well as show you one of the many non-IaaS services available on Windows Azure.</p>
+
+<p>Microsoft WebMatrix is a free tool that allows you to create, customize and publish Web sites. WebMatrix includes a range of built-in templates to make it quick and easy to get started with your Web site, and it provides built-in publishing support to help you easily publish your Web sites to Windows Azure.
+In this demo, we will create a Web site from the Windows Azure portal, and start to build the Web site locally using WebMatrix.</p>
+
+<p>This is an example of Platform as a Service (PaaS).</p>
+
+<p><a name="Demo 1: Creating your first Windows Azure Web Site" /></p>
+
+<h2>Demo 1: Creating your first Windows Azure Web Site</h2>
+
+<ol>
+<li><p>In the Azure portal, on the toolbar, click <strong>New</strong>.</p>
+
+<p><img src="./images/New-Web-Site-Button.png?raw=true" alt="New Web Site Button" title="New Web Site Button">
+</p>
+<blockquote>
+<p><strong>Speaking Point:</strong></p>
+
+<p>In this demo, we will create a new Web site, and use WebMatrix to deploy an application to that Web site.</p>
+
+<p>In Azure, this is an example of a Platform as a Service (PaaS) VM.</p>
+
+<p>That means that we are responsible for the Web site content, but that Azure manages patching, scaling, availability, etc.</p>
+</blockquote></li>
+<li><p>In the New window, Click <strong>Compute</strong>, click <strong>Web Site</strong>, and then click <strong>Quick Create</strong>.</p>
+
+<p><img src="./images/Quick-Create.png?raw=true" alt="Quick Create" title="Quick Create">
+</p>
+<blockquote>
+<p><strong>Speaking Point:</strong></p>
+
+<p>We use the Quick Create option to quickly create a new Web site.</p>
+</blockquote></li>
+<li><p>In the <strong>URL</strong> text box, type <strong>Demo-NNNN</strong>.</p>
+<blockquote>
+<p><strong>Note:</strong> The Web site URL must be unique within <name>.azurewebsites.net. Pick a four-digit number for NNNN that is not in use yet. If the green check mark does not appear, use a different number.</p>
+</blockquote>
+<p><img src="./images/Web-Site-URL-Dialog.png?raw=true" alt="Web Site URL Dialog" title="Web Site URL Dialog">
+</p>
+<blockquote>
+<p><strong>Speaking Point:</strong></p>
+
+<p>We pick a unique name for our new Web site. The URL needs to be unique within <strong><name>.azurewebsites.net</strong>.</p>
+</blockquote></li>
+<li><p>In the <strong>Region</strong> drop-down list box, select the location where your storage account is created (for example: West US).</p>
+
+<p><img src="./images/Select-Region.png?raw=true" alt="Select Region" title="Select Region">
+</p></li>
+<li><p>Click <strong>Create Web Site</strong>.</p>
+
+<p><img src="./images/Creating-a-Web-Site.png?raw=true" alt="Creating a Web Site" title="Creating a Web Site">
+</p>
+<blockquote>
+<p><strong>Speaking Point:</strong></p>
+
+<p>Azure will create a new Web site.</p>
+
+<p>Notice how quickly the new Web site is provisioned. Usually this only takes a few seconds. The reason for the quick provisioning is that Azure has pre-started Web sites in the datacenter already.</p>
+</blockquote></li>
+<li><p>In the Web sites window, click on the link to <strong><a href=""><a href="http://demo-NNNN.azurewebsites.net">http://demo-NNNN.azurewebsites.net</a></a>.</strong></p>
+
+<p><img src="images/Verifying-Web-Site-Creation.png?raw=true" alt="Verifying-Web-Site-Creation" title="Verifying Web Site Creation">
+</p>
+
+<p><img src="images/Web-Site-Created-Dialog.png?raw=true" alt="Web-Site-Created-Dialog" title="Web Site Created Dialog">
+</p>
+<blockquote>
+<p><strong>Speaking Point:</strong></p>
+
+<p>The new Web site is up and running, but does not contain any content yet.</p>
+
+<p>You can use several methods to copy your site content to the new Web site, including <strong>FTP</strong>, <strong>GIT</strong>, <strong>Team Foundation Service</strong>, or development tools such as <strong>Visual Studio</strong> or <strong>WebMatrix</strong>. For the demo, we use WebMatrix.</p>
+</blockquote></li>
+<li><p>Close the <strong><a href=""><a href="http://demo-NNNN.azurewebsites.net">http://demo-NNNN.azurewebsites.net</a></a></strong> browser window. In the Azure portal, select the <strong>Demo-NNNN</strong> Web Site, and then on the toolbar, click the <strong>WebMatrix</strong> icon.</p>
+
+<p><img src="./images/Installing-Web-Matrix.png?raw=true" alt="Installing Web Matrix" title="Installing Web Matrix">
+</p>
+<blockquote>
+<p><strong>Speaking Point:</strong></p>
+
+<p>In the demo environment, WebMatrix is already installed. Otherwise you are prompted to download and install WebMatrix first.</p>
+</blockquote></li>
+<li><p>If the WebMatrix License agreement dialog box appears, select <strong>I agree</strong>, and then click the check mark icon to continue. If he Application Run warning dialog box appears, click <strong>Run</strong>.</p>
+
+<p><img src="./images/Running-Web-Matrix-Installer.png?raw=true" alt="Running Web Matrix Installer" title="Running Web Matrix Installer">
+</p>
+<blockquote>
+<p><strong>Speaking Point:</strong></p>
+
+<p>After we accept the license agreement, and the warning message, WebMatrix opens.</p>
+</blockquote></li>
+<li><p>In the WebMatrix window, on the <strong>File</strong> menu, click <strong>New</strong>, and then click <strong>Site from Template Gallery</strong> or In the Download window, click <strong>Yes, install from Template Gallery</strong>.</p>
+
+<p><img src="./images/Installing-pre-built-templates.png?raw=true" alt="Installing pre-built templates" title="Installing pre-built templates">
+</p>
+<blockquote>
+<p><strong>Speaking Point:</strong></p>
+
+<p>WebMatrix contains several pre-built templates to get started quickly with your new Web site.</p>
+
+<p>Notice that there are tons of pre-existing options to choose from here such as a WordPress site, etc.
+In the demo, we will use the <strong>Photo Gallery</strong> template.</p>
+</blockquote></li>
+<li><p>On the Site from Template page, select <strong>ASP.NET</strong>, click <strong>Photo Gallery</strong>, and then click <strong>Next.</strong></p>
+
+<p><img src="./images/Choosing-Photo-Gallery-Template.png?raw=true" alt="Choosing Photo Gallery Template" title="Choosing Photo Gallery Template">
+</p>
+<blockquote>
+<p><strong>Speaking Point:</strong></p>
+
+<p>WebMatrix will download all the files related to the Photo Gallery template, and load the files in WebMatrix.</p>
+</blockquote></li>
+<li><p>Select the <strong>Files</strong> section.</p>
+
+<p><img src="./images/Ading-Files-to-Template.png?raw=true" alt="Ading Files to Template" title="Ading Files to Template">
+</p>
+<blockquote>
+<p><strong>Speaking Point:</strong></p>
+
+<p>WebMatrix has four workspaces to customize and configure your new application: Site, Files, Databases and Reports.</p>
+
+<p>In this demo, we are not going to customize the sample application.</p>
+</blockquote></li>
+<li><p>On the ribbon, click <strong>Publish</strong>. On the Publish Preview page, select the <strong>PhotoGallery.sdf</strong> database.</p>
+
+<p><img src="./images/Publishing-a-Web-Site.png?raw=true" alt="Publishing a Web Site" title="Publishing a Web Site">
+</p>
+<blockquote>
+<p><strong>Speaking Point:</strong></p>
+
+<p>To run the application files from our new Web site, WebMatrix will upload all the needed files to the Demo-NNNN Web site.</p>
+</blockquote></li>
+<li><p>On the Publish Preview page, click <strong>Continue</strong>.</p>
+
+<p><img src="./images/Copying-Files-to-Web-Site.png?raw=true" alt="Copying Files to Web Site" title="Copying Files to Web Site">
+</p>
+<blockquote>
+<p><strong>Speaking Point:</strong></p>
+
+<p>The files are copied to the Web site.</p>
+</blockquote></li>
+<li><p>When the publishing is completed, in the WebMatrix notification bar, click the URL to the Web site <strong><a href=""><a href="http://demo-NNNN.azurewebsites.net">http://demo-NNNN.azurewebsites.net</a></a></strong></p>
+
+<p><img src="./images/Publishing-Complete.png?raw=true" alt="Publishing Complete" title="Publishing Complete">
+</p>
+
+<p><img src="./images/Verifying-Web-Site.png?raw=true" alt="Verifying Web Site" title="Verifying Web Site">
+</p>
+<blockquote>
+<p><strong>Speaking Point:</strong></p>
+
+<p>The Photo Gallery site opens.</p>
+
+<p>This result confirms that we successfully published a site to an Azure Web site.</p>
+</blockquote></li>
+<li><p>Go back to the Dashboard of the website.</p>
+
+<p><img src="./images/Viewing-Web-Site-Dashboard.png?raw=true" alt="Viewing Web Site Dashboard" title="Viewing Web Site Dashboard">
+</p>
+<blockquote>
+<p><strong>Speaking Point:</strong></p>
+
+<p>Now let’s do a quick check of what’s going on under the hood here with this Website that is running as a PaaS instance.</p>
+
+<p>Remember earlier we showed you how to create a VM (IaaS) and the fact we can connect directly to the console of that VM.  We would need to manage, patch, and secure the OS ourselves.</p>
+
+<p>In the dashboard, you can see the statistics of CPU, Data, storage, and memory usage, but you won’t see on the toolbar at the bottom the ability to connect to the website using RDP because it is PaaS.</p>
+</blockquote></li>
+<li><p>Select the <strong>Scale</strong> tab, Click on <strong>Reserved</strong> and Open on the <strong>Instance Size</strong> drop-down box.</p>
+
+<p><img src="./images/Changing-Web-Site-Scale-Mode.png?raw=true" alt="Changing Web Site Scale Mode" title="Changing Web Site Scale Mode">
+</p>
+<blockquote>
+<p><strong>Speaking Point:</strong></p>
+
+<p>Here we can see that we have the ability to change the website mode from Free to Shared or Reserved.</p>
+
+<p>Let’s choose <strong>Reserved</strong> that will dedicate compute and memory resources to this website alone behind-the-scenes.</p>
+
+<p>You’ll also notice you have the ability to choose from a number of options with the # of cores and size of memory.  We’ll stick with the default of <strong>Small</strong>.</p>
+</blockquote></li>
+<li><p>Click <strong>Save</strong>, click <strong>Yes</strong> to upgrade, and show in the details how this was upgraded.</p>
+
+<p><img src="./images/image-0.png?raw=true" alt="Changing Web Site Scale Mode" title="Changing Web Site Scale Mode">
+</p></li>
+<li><p>On the Scale tab, increase the <strong>Instance Count</strong> from 1 to <strong>3</strong>, click <strong>Save</strong>, and click <strong>Yes</strong> to continue.</p>
+
+<p><img src="./images/Upscaling-Instace-Count.png?raw=true" alt="Upscaling Instace Count" title="Upscaling Instace Count">
+</p>
+<blockquote>
+<p><strong>Speaking Point:</strong></p>
+
+<p>Now let’s increase the instance count.  As you can see this is a big advantage over IaaS since you can’t simply increase the # of identical VMs to scale a service in this manner.</p>
+</blockquote></li>
+<li><p>On the Scale tab, change the Web site Mode back to <strong>Free</strong>, click <strong>Save</strong>, and click <strong>Yes</strong> to downgrade.</p>
+
+<p><img src="./images/Downscaling-Web-Site-Mode.png?raw=true" alt="Downscaling Web Site Mode" title="Downscaling Web Site Mode">
+</p>
+<blockquote>
+<p><strong>Speaking Point:</strong></p>
+
+<p>Likewise, we can scale the site back down to Free mode quickly to avoid any charges.</p>
+</blockquote></li>
+</ol>
