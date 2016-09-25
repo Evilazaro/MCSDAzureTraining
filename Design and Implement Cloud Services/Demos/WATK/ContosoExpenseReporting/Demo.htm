@@ -1,0 +1,1218 @@
+<p><a name="title" /></p>
+
+<h1>Contoso Expense Reporting Demo</h1>
+
+<hr>
+
+<p><a name="Overview" /></p>
+
+<h2>Overview</h2>
+
+<p>This demo illustrates an end-to-end scenario highlighting the Windows Azure cloud-ready data services, including Windows Azure SQL Database, Windows Azure Storage, and SQL Server 2012 in a Windows Azure Virtual Machine. This demo will showcase the rich and powerful features of the Windows Azure data services including easy provisioning of the services, fluid migration options, and the high-performing, scalable and feature-rich data options.</p>
+
+<p><a id="goals" /></p>
+
+<h3>Goals</h3>
+
+<p>In this demo, you will see the following:</p>
+
+<ol>
+<li><p>Contoso Expense Reporting application running on-premise.</p></li>
+<li><p>Provisioning a virtual machine in Windows Azure to run SQL Server 2012.</p></li>
+<li><p>Deploying the application to a Windows Azure Web Site.</p></li>
+<li><p>Connecting the application to a Windows Azure SQL Database.</p></li>
+<li><p>Connecting the application to use Windows Azure Storage.</p></li>
+<li><p>Creating SQL Database Federations.</p></li>
+</ol>
+
+<p><a name="setup" /></p>
+
+<h3>Setup and Configuration</h3>
+
+<p>In order to execute this demo, you need to set up your environment.</p>
+
+<ol>
+<li><p>Open Windows Explorer and browse to the demo's <strong>Source</strong> folder.</p></li>
+<li><p>Execute <strong>Setup.Local.cmd</strong> with Administrator privileges to launch the setup process that will verify all the prerequisites and install the Visual Studio code snippets for this demo.</p></li>
+<li><p>If the User Account Control dialog is shown, confirm the action to proceed.</p></li>
+</ol>
+<blockquote>
+<p><strong>Note 1:</strong> Make sure you have all the dependencies for this demo checked before proceeding.</p>
+
+<p><strong>Note 2:</strong> The setup script copies the source code for this demo to a working folder that can be configured in the <strong>Config.Local.xml</strong> file (by default, C:\Projects). From now on, this folder will be referenced in this document as the <strong>working folder</strong>.</p>
+</blockquote>
+<hr>
+
+<p><a name="Demo" /></p>
+
+<h2>Demo</h2>
+
+<p>Throughout the course of this session, we will show the power and flexibility of Windows Azure by taking an on-premises application and associated database, and migrate them to Windows Azure. We will first use our IaaS services to migrate the database to a virtual machine with SQL Server 2012 and the application to a Windows  Azure Cloud Service. We will then highlight our PaaS services by migrating the database to SQL Azure and extend the functionality of the application to use our Windows Azure storage services.</p>
+
+<p>This demo contains the following segments:</p>
+
+<ol>
+<li><a href="#segment1">Contoso Expense Reporting Application Overview</a>.</li>
+<li><a href="#segment2">Migrating to Windows Azure with Virtual Machines &amp; SQL Server 2012</a>.</li>
+<li><a href="#segment3">Windows Azure SQL Database</a>. </li>
+<li><a href="#segment4">Windows Azure SQL Federation</a>. </li>
+<li><a href="#segment5">Windows Azure Storage</a>. </li>
+</ol>
+
+<p><a name="segment1" /></p>
+
+<h3>Contoso Expense Reporting On-Premises</h3>
+
+<ol>
+<li>In Visual Studio, open the <strong>Expenses.Web.sln</strong> solution located in the working folder of this demo.</li>
+<li><p>Press <strong>F5</strong> to launch the application in the Development Server.</p>
+
+<p><img src="Images/expense-reporting-app-running-locally.png?raw=true" alt="Expense reporting application running locally" title="Expense reporting application running locally">
+</p>
+
+<p><em>Expense reporting application running locally (on-premises)</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>We’re first going to log in as a user and submit a simple expense report.</p>
+
+<p>As part of this, we’re going to highlight some of the challenges the company has today with the system, including the challenge of attaching receipts and verifying expenses.</p>
+</blockquote></li>
+<li><p>Click <strong>Login as user</strong>.</p>
+
+<p><img src="Images/log-in-as-user.png?raw=true" alt="Log in as User" title="Log in as User">
+</p>
+
+<p><em>Log in as a regular user</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>We’re first going to log in as a user to illustrate some of the pain points we have with this application in submitting expense reports and highlight some of the areas where this application can be expanded and improved.</p>
+</blockquote></li>
+<li><p>Select <strong>My Reports</strong> in the toolbar. </p>
+
+<p><img src="Images/expense-reporting-app-dashboard.png?raw=true" alt="Expense reporting application dashboard" title="Expense reporting application dashboard">
+</p>
+
+<p><em>Expense reporting application dashboard</em></p></li>
+<li><p>In the <strong>My Reports</strong> view, click <strong>Add New Report</strong>.</p>
+
+<p><img src="Images/application-dashboard.png?raw=true" alt="Application Dashboard" title="Application Dashboard">
+</p>
+
+<p><em>Viewing the list of expense reports</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>In my Dashboard view, I can see expenses I have submitted and are awaiting approval from my manager, as well as those that have been approved and rejected.</p>
+</blockquote></li>
+<li><p>Enter the following information:</p>
+
+<ul>
+<li>Name</li>
+<li>Purpose</li>
+</ul></li>
+<li><p>Next, click <strong>Add New Expense</strong> and fill in the following fields:</p>
+
+<ul>
+<li>Category</li>
+<li>Description</li>
+<li>Merchant</li>
+<li>Billed Amount</li>
+<li>Transaction Amount</li>
+</ul>
+
+<p><img src="Images/expense-reporting-new-report.png?raw=true" alt="Expense Reporting - New Report" title="Expense Reporting - New Report">
+</p>
+
+<p><em>Adding a new report</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Highlight the fact that because of limitations on-premises, receipts are still submitted manually and are not physically associated or attached with the Expense report.</p>
+</blockquote></li>
+<li><p>Click <strong>Save Draft</strong>.</p>
+
+<p><img src="Images/expense-reporting-save-draft.png?raw=true" alt="Expense Reporting - Save Draft" title="Expense Reporting - Save Draft">
+</p>
+
+<p><em>Saving a draft report</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>We are going to save this expense report as a draft because we will come back to it several times during this demo.</p>
+</blockquote></li>
+<li><p>Show <strong>Visual Studio</strong>. </p></li>
+<li><p>Open the <strong>Solution Explorer</strong> window.</p>
+
+<p><img src="Images/applications-solution-explorer.png?raw=true" alt="Application's Solution Explorer" title="Application's Solution Explorer">
+</p>
+
+<p><em>The Expense Report application in Solution Explorer</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Standard MVC web application. Common to most of you. Most have running in enterprise.</p>
+</blockquote></li>
+</ol>
+
+<p><a name="segment2" /></p>
+
+<h3>Migrating to Windows Azure with Virtual Machines &amp; SQL Server 2012</h3>
+
+<ol>
+<li><p>Open the Web browser and go to the Windows Azure Portal at <a href="http://windows.azure.com">http://windows.azure.com</a></p></li>
+<li><p>Sign in with your Live ID.</p>
+
+<p><img src="Images/sign-in.png?raw=true" alt="Sign in" title="Windows Azure Portal Sign in">
+</p>
+
+<p><em>Windows Azure Portal sign in</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>The first step in migrating our application to Windows Azure is to create a VM.</p>
+
+<p>Let us first navigate to the Windows Azure portal and get signed in.</p>
+
+<p>We use Live ID for authentication on the portal, so let’s log on.</p>
+</blockquote></li>
+<li><p>In the portal, click <strong>New</strong> | <strong>Virtual Machine</strong> | <strong>From Gallery</strong>.</p>
+
+<p><img src="Images/creating-virtual-machine-from-gallery.png?raw=true" alt="Creating Virtual Machine from Gallery" title="Creating Virtual Machine from Gallery">
+</p>
+
+<p><em>Creating a virtual machine from the Gallery</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Now that we’re logged in, creating a virtual machine via the portal is easy. Let’s select the virtual machines option in the navigation pane.</p>
+
+<p>At least one virtual machine will be created, but we’re going to create a new virtual machine that has SQL Server 2012. To do that, we’re going to select the <strong>FROM GALLERY</strong> option.</p>
+
+<p>You can use <strong>Quick Create</strong> if you only need one virtual machine that doesn’t need to be load-balanced or joined to a virtual network or
+<strong>From Gallery</strong> if you have more complex solution. With the latter, you have more flexibility in how the machine is used in advanced scenarios.</p>
+</blockquote></li>
+<li><p>In the <strong>CREATE VIRTUAL MACHINE</strong> dialog, select the <strong>Microsoft SQL Server 2012 Evaluation</strong> option.</p></li>
+<li><p>Click the right arrow (Next).</p>
+
+<p><img src="Images/selecting-virtual-machine-os-version.png?raw=true" alt="Selecting Virtual Machine OS version" title="Selecting Virtual Machine OS version">
+</p>
+
+<p><em>Selecting an OS version for the virtual machine</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Notice all the different VM’s that we have in our gallery. As you can see, we have many VMs that include Linux, as well as several Server 2008 R2 and Server 2012 VMs.</p>
+
+<p>We also have, as you can see, a SQL Server 2012 VM. This VM is running SQL Server 2012 Enterprise Evaluation edition which is the VM we want to create, so let’s select that one.</p>
+</blockquote></li>
+<li><p>The second page of the <strong>Create Virtual Machine</strong> wizard is the <strong>VM Configuration</strong>. Enter the following:</p>
+
+<ul>
+<li><strong>Virtual Machine Name</strong>: <em>ContosExpenseVM</em></li>
+<li><strong>Password</strong>: <em>Passw0rd!</em></li>
+</ul></li>
+<li><p>Enter the password for the administrator account, then re-enter the password for confirmation.</p></li>
+<li><p>Select <em>Medium</em> or larger as the <strong>SIZE</strong> of the VM.</p>
+
+<p><img src="Images/vm-configuration-page.png?raw=true" alt="VM Configuration page" title="VM Configuration page">
+</p>
+
+<p><em>VM configuration page</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Now what we need to do is give our virtual machine a name. This is the portal display name.</p>
+
+<p>We also need to supply an administrator password. </p>
+
+<p>More  importantly, however, we also need to select the size of the VM. There are several size options:</p>
+
+<ul>
+<li>Extra Small</li>
+<li>Small</li>
+<li>Medium</li>
+<li>Large</li>
+<li>Extra Large</li>
+</ul>
+
+<p>These sizes differ, as we can see, in the amount of CPU cores and memory allotted to the VM. It is important that the VM we select will suffice for our needs.</p>
+</blockquote></li>
+<li><p>The third page of the <strong>CREATE VIRTUAL MACHINE</strong> wizard is the <strong>VM Mode.</strong> Select the <strong>STANDALONE VIRTUAL MACHINE</strong> option.</p></li>
+<li><p>Enter a <em>unique</em> <strong>DNS NAME</strong> for the virtual machine.</p></li>
+<li><p>For the <strong>STORAGE ACCOUNT</strong>, leave the default at <strong>Use Automatically Generated Storage Account</strong>.</p></li>
+<li><p>Choose a suitable <strong>REGION/AFFINITY GROUP/VIRTUAL NETWORK</strong> where the VM will be deployed.</p>
+
+<p><img src="Images/vm-mode-page.png?raw=true" alt="VM Mode page" title="VM Mode page">
+</p>
+
+<p><em>VM Mode page</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Now, we need to select the type of virtual machine. In other words, is this going to be new standalone virtual machine, or are we connecting to an existing virtual machine? With the new IaaS domain features, we have the ability to join this VM to an existing domain. However, for the purposes of this demo, we’ll simply create a standalone VM.</p>
+
+<p>Next, we need to supply a DNS name for this VM. </p>
+
+<p>These VMs are stored in blob storage and we need to specify whether our VM will use a Windows Azure account tied to our subscription, if we created one, or use an automatically generated storage account. Since we haven’t created a storage account yet, we’ll use the automatically generated account.
+Lastly, we need to specify in which region to create the VM. </p>
+</blockquote></li>
+<li><p>The fourth and final page of the <strong>CREATE VIRTUAL MACHINE</strong> wizard is the <strong>VM Options.</strong> </p></li>
+<li><p>Select <strong>Create Availability Set</strong>, and set the <strong>AVAILABILITY SET NAME</strong> to <strong>MyAvailSet</strong>.</p></li>
+<li><p>Click Finish (check mark).</p>
+
+<p><img src="Images/vm-options-page.png?raw=true" alt="VM Options page" title="VM Options page">
+</p>
+
+<p><em>VM Options page</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Lastly, we need to select an availability set in which to create the VM. </p>
+
+<p>An availability set is a group of machines that are deployed across multiple locations (commonly called fault domains). Availability sets are used to protect from outages.</p>
+
+<p>So, we’ll select the <strong>Create Availability Set</strong> option and name the availability set as <em>MyAvailSet</em>.</p>
+
+<p>Great, we are done! We can see in the portal that our VM is being provisioned.</p>
+</blockquote></li>
+<li><p>For expediency, you may now switch over to a virtual machine that you have previously provisioned. This VM must be configured with:</p>
+
+<ul>
+<li>Microsoft SQL Server 2012</li>
+<li>An endpoint configured for TCP port 1433 to enable remote access to the SQL Server instance</li>
+<li>TCP port 1433 opened in the Windows Firewall</li>
+<li>SQL Server authentication enabled in SQL Server</li>
+<li>An additional SQL Server login configured with SQL Server authentication and assigned to the <em>sysadmin</em> server role</li>
+</ul>
+
+<p>Otherwise, you need to complete the following steps to configure the VM.</p></li>
+<li><p>In the <strong>Windows Azure Portal</strong>, select the VM you created previously.</p></li>
+<li><p>Select the <strong>ENDPOINTS</strong> view, and then click <strong>ADD ENDPOINT</strong> in the command bar.</p></li>
+<li><p>In the <strong>ADD ENDPOINT</strong> dialog, select <strong>Add Endpoint</strong> and then click the right arrow to go to the next page.</p>
+
+<p><img src="Images/add-endpoint-to-virtual-machine-page.png?raw=true" alt="Add Endpoint to Virtual Machine page" title="Add Endpoint to Virtual Machine page">
+</p>
+
+<p><em>Adding an endpoint to the virtual machine</em></p></li>
+<li><p>In the second page of the <strong>ADD ENDPOINT</strong> dialog, enter a <strong>NAME</strong> for the endpoint, select <strong>TCP</strong> as the <strong>PROTOCOL</strong>, and specify <em>1433</em> for both the <strong>PUBLIC PORT</strong> and <strong>PRIVATE PORT</strong> . </p>
+
+<p><img src="Images/add-endpoint-to-virtual-machine-page2.png?raw=true" alt="Add Endpoint To Virtual Machine page" title="Add Endpoint To Virtual Machine page">
+</p>
+
+<p><em>Configuring the virtual machine endpoint</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Highlight the fact that in order to gain access to SQL Server inside the VM from external, we needed to create an <strong>Endpoint</strong> for port 1433.</p>
+
+<p><strong>Virtual machines</strong> use endpoints to communicate within Windows Azure and with other resources on the Internet</p>
+
+<p>Creating the endpoint allows us to access the VM remotely to connect to SQL Server.</p>
+</blockquote>
+<p><img src="Images/endpoints-section.png?raw=true" alt="Endpoints Section" title="Endpoints Section">
+</p>
+
+<p><em>Viewing the endpoints configured for the virtual machine</em></p></li>
+<li><p>Ensure that you are on the <strong>DASHBOARD</strong> page.</p></li>
+<li><p>In the <strong>DASHBOARD</strong>, highlight and copy the <strong>DNS</strong> name of the virtual machine to the clipboard.</p>
+
+<p><img src="Images/virtual-machines-dns.png?raw=true" alt="Virtual Machine's DNS" title="Virtual Machine's DNS">
+</p>
+
+<p><em>Virtual machine's DNS</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>However, before we connect to the VM, we need to grab some information from it. </p>
+
+<p>In order to connect to SQL Server in the VM, we need its DNS name. We’ll be using it shortly to connect to SQL Server.</p>
+</blockquote></li>
+<li><p>Now, click <strong>Connect</strong> on the command bar.</p></li>
+<li><p>Save the RDP file to the desktop or another suitable location.</p></li>
+<li><p>Minimize the browser.</p>
+
+<p><img src="Images/connect-to-the-virtual-machine.png?raw=true" alt="Connect to the Virtual Machine" title="Connect to the Virtual Machine">
+</p>
+
+<p><em>Connecting to the virtual machine</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>We’re going to connect to this VM and to do that, we simply select the VM in the portal and click <strong>CONNECT</strong>, which downloads a Remote Desktop Connection file and asks us to open it or save it to disk. </p>
+
+<p>For our existing VM, we will save this shortcut to our desktop.</p>
+</blockquote></li>
+<li><p>On the desktop, double-click the RDP file.</p></li>
+<li><p>In the <strong>Windows Security</strong> dialog, enter the password for the Administrator account.</p>
+
+<ul>
+<li>Password: Passw0rd!</li>
+</ul></li>
+<li><p>Click <strong>OK</strong>.</p>
+
+<p><img src="Images/connecting-virtual-machine-entering-credent.png?raw=true" alt="Connecting Virtual Machine - Entering Credentials" title="Connecting Virtual Machine - Entering Credentials">
+</p>
+
+<p><em>Entering the credentials for the Remote Desktop Connection</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Let’s log into the virtual machine by entering the password we configured earlier. </p>
+</blockquote></li>
+<li><p>Inside the remote desktop session, click <strong>Run</strong> on the <strong>Start</strong> menu, type <strong>WF.msc</strong>, and then click <strong>OK</strong>.</p></li>
+<li><p>In the <strong>Windows Firewall with Advanced Security</strong> management console, select <strong>Inbound Rules</strong> in the left pane, and then click <strong>New Rule</strong> in the action pane.</p></li>
+<li><p>In the <strong>Rule Type</strong> page, select <strong>Port</strong>, and then click <strong>Next</strong>.</p></li>
+<li><p>In the <strong>Protocol and Ports</strong> page, select <strong>TCP</strong>. Select <strong>Specific local ports</strong>, and then type the port number of the instance of the Database Engine, <strong>1433</strong> for the default instance. Click <strong>Next</strong>.</p></li>
+<li><p>In the <strong>Action</strong> page, select <strong>Allow the connection</strong>, and then click <strong>Next</strong>.</p></li>
+<li><p>In the <strong>Profile</strong> page, select any profiles that describe the computer connection environment when you want to connect to the Database Engine, and then click <strong>Next</strong>.</p></li>
+<li><p>In the <strong>Name</strong> page, type a name and description for this rule, and then click <strong>Finish</strong>.</p>
+
+<p><img src="Images/new-inbound-firewall-rule.png?raw=true" alt="New Inbound Firewall Rule" title="New Inbound Firewall Rule">
+</p>
+
+<p><em>Creating a firewall rule for SQL Server access</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>To gain access to SQL Server in the VM, we need to open port 1433 on the Windows Firewall to allow inbound connections.</p>
+</blockquote></li>
+<li><p>Now, <strong>in the remote desktop session</strong>, open SQL Server Management Studio and log in to SQL Server using Windows Authentication.</p>
+
+<p><img src="Images/management-studios-object-explorer.png?raw=true" alt="Management Studio's Object Explorer" title="Management Studio's Object Explorer">
+</p>
+
+<p><em>Management Studio's Object Explorer</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Call out the fact that is indeed SQL Server 2012, FULL FUNCTIONALITY.</p>
+</blockquote></li>
+<li><p>Expand the <strong>Databases</strong> node to illustrate that there are no user databases.</p></li>
+<li><p>Right-click the (root) server node and then select <strong>Properties</strong>.</p></li>
+<li><p>In the <strong>Server Properties</strong> dialog, select the <strong>Security</strong> page.</p></li>
+<li><p>Under <strong>Server authentication</strong>, select the option labeled <strong>SQL Server and Windows Authentication mode</strong> and then click <strong>OK</strong>.</p>
+
+<p><img src="Images/enabling-sql-server-authentication.png?raw=true" alt="Enabling SQL Server Authentication" title="Enabling SQL Server Authentication">
+</p>
+
+<p><em>Enabling SQL Server Authentication</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>For this demo, we will enable SQL Server authentication mode and create login that we can use to connect remotely.</p>
+</blockquote></li>
+<li><p>Now, right-click the (root) server node again and select <strong>Restart</strong> to allow the change in authentication mode to take effect.</p></li>
+<li><p>Expand the <strong>Security</strong> node, right-click <strong>Logins</strong>, and then select <strong>New Login</strong>.</p></li>
+<li><p>In the <strong>Login - New</strong> dialog, select the <strong>General</strong> page, type a new <strong>Login name</strong>, for example <em>demouser</em>, select <strong>SQL Server authentication</strong>, and clear the option labeled <strong>User must change password at next login</strong>.</p>
+
+<p><img src="Images/sql-server-create-login.png?raw=true" alt="New SQL Server Login" title="New SQL Server Login">
+</p>
+
+<p><em>Adding a new SQL Server login</em></p></li>
+<li><p>Now, switch to the <strong>Server Roles</strong> page, enable the <strong>sysadmin</strong> role, and then click <strong>OK</strong>.</p>
+
+<p><img src="Images/assign-sysadmin-role-to-login.png?raw=true" alt="Assigning the sysadmin role" title="Assigning the sysadmin role">
+</p>
+
+<p><em>Assigning the sysadmin role to the SQL Server login</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>For simplicity, we also need to create a new SQL Server login with which to connect to SQL Server in the VM.</p>
+</blockquote></li>
+<li><p>Minimize the remote desktop session for the VM.</p></li>
+<li><p><strong>In your local machine (on-premises)</strong>, open Management Studio for SQL Server 2012.</p></li>
+<li><p>In the <strong>Connect to Server</strong> dialog, log into the on-premise SQL Server using Windows Authentication.</p>
+
+<p><img src="Images/connecting-to-on-premises-sql-server.png?raw=true" alt="Connecting to on-premises SQL Server" title="Connecting to on-premises SQL Server">
+</p>
+
+<p><em>Connecting to the on-premises SQL Server</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Our first task is to connect to our on-premises SQL Server. This is where our source database is coming from.</p>
+</blockquote></li>
+<li><p>Expand the database node and point to the database that is going to be migrated to the VM. </p></li>
+<li><p>Create a second SQL Server connection. In the <strong>Server name</strong> field, paste in the DNS name of the VM copied earlier from the portal.</p></li>
+<li><p>Choose <strong>SQL Server Authentication</strong> as the authentication method, and then type <em>demouser</em> and <em>Passw0rd!</em> for the login name and password.</p>
+
+<p><img src="Images/creating-to-sql-server-using-vms-dns-name.png?raw=true" alt="Creating to SQL Server using VM's DNS Name" title="Creating to SQL Server using VM's DNS Name">
+</p>
+
+<p><em>Connecting to the SQL Server in Windows Azure using the VM's DNS name</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>We also need to connect to SQL Server in the VM. </p>
+
+<p>This is as easy as specifying the DNS name of the VM. </p>
+
+<p>We copied this name to the clipboard earlier.</p>
+</blockquote></li>
+<li><p>You should now have two connections, one for the on-premises SQL Server and one for the server running in the VM.</p></li>
+<li><p>In the on-premises connection, right-click the database to export and select <strong>Tasks</strong> -&gt; <strong>Export Data-Tier Application</strong> in the context menu.</p></li>
+<li><p>In the <strong>Introduction</strong> screen, click <strong>Next</strong>.</p>
+
+<p><img src="Images/exporting-data-tier-application.png?raw=true" alt="Exporting Data-tier Application" title="Exporting Data-tier Application">
+</p>
+
+<p><em>Exporting the data-tier application</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>We actually have several ways of getting our database from on-premises to the VM, including the Generate Scripts wizard or backup/restore. </p>
+
+<p><strong>However, new in Sql Server 2012 is the ability to export and import a database using what are known as BACPACs</strong>.</p>
+</blockquote></li>
+<li><p>In the <strong>Export Settings</strong> page, select the option labeled <strong>Save to local disk</strong>.</p></li>
+<li><p>Click <strong>Browse</strong>.</p></li>
+<li><p>In the <strong>Save As</strong> dialog, go to the <em>C:\DAC Packages</em> folder or another suitable location, set the filename to <strong>Expenses</strong>, and then click <strong>Save</strong>.</p></li>
+<li><p>Click <strong>Next</strong> to go to the <strong>Summary Page</strong>.</p></li>
+<li><p>Click <strong>Finish</strong>.</p>
+
+<p><img src="Images/exporting-bacpac-file.png?raw=true" alt="Exporting bacpac file" title="Exporting bacpac file">
+</p>
+
+<p><em>Exporting the bacpac file</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p><strong>Highlight the following:</strong></p>
+
+<ul>
+<li>BACPACs - schema and data</li>
+<li>Save TO Windows Azure BLOB storage</li>
+</ul>
+
+<p>We will now import the bacpac into the SQL Server running in the VM.</p>
+</blockquote></li>
+<li><p>In the SQL/VM connection in Object Explorer, right-click the <strong>Databases</strong> node and select <strong>Import Data-Tier Application</strong>.</p></li>
+<li><p>In the <strong>Introduction</strong> page, click <strong>Next</strong>.</p>
+
+<p><img src="Images/importing-data-tier-application.png?raw=true" alt="Importing Data-tier Application" title="Importing Data-tier Application">
+</p>
+
+<p><em>Importing the data-tier application</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Again, we go back to SQL Server 2012, but this time we select our destination server, which is SQL Server running in the VM.</p>
+</blockquote></li>
+<li><p>In the <strong>Import Settings</strong> page, click <strong>Browse</strong> and go to the folder where you previously saved the bacpac file.</p></li>
+<li><p>Select the bacpac file and click <strong>Open</strong>.</p></li>
+<li><p>Click <strong>Next</strong>.</p></li>
+<li><p>In the <strong>Database Settings</strong> page, click <strong>Next</strong>.</p></li>
+<li><p>In the <strong>Summary</strong> page, click <strong>Finish</strong>.</p>
+
+<p><img src="Images/importing-bacpac-file.png?raw=true" alt="Importing bacpac file" title="Importing bacpac file">
+</p>
+
+<p><em>Importing the bacpac file</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Now, we’re going to import from the exported bacpac file. </p>
+
+<p>Again, highlight the following:</p>
+
+<ul>
+<li>BACPACs - schema and data</li>
+<li>Import FROM Windows Azure BLOB storage</li>
+</ul>
+
+<p>POINT: No need to create the database! This process will create it for you!**</p>
+</blockquote></li>
+<li><p>Maximize the remote desktop session to the VM and in SSMS, refresh the <strong>Databases</strong> node.</p></li>
+<li><p>Show the newly created database and, in particular, expand its <strong>Tables</strong> node.</p></li>
+<li><p>In Visual Studio, open the <strong>Web.config</strong> file.</p></li>
+<li><p>Remove the existing connection string.</p></li>
+<li><p>Press <strong>CTL+K, CTL+X</strong> and select <strong>My XML Snippets</strong>.</p></li>
+<li><p>Insert the <strong>VMConnectionString</strong> snippet and replace the placeholders in the connection string with the host name of your SQL Server VM, and the user name and password of the SQL Server login that you created previously.</p>
+
+<p><img src="Images/updating-connection-string-in-webconfig.png?raw=true" alt="Updating the connection string within Web.config" title="Updating the connection string within Web.config">
+</p>
+
+<p><em>Updating the connection string in Web.config</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>We are going to deploy the application to Windows Azure, but we now want it to connect to our database in the VM, so the first thing we need to do is modify the connection string.</p>
+</blockquote></li>
+<li><p>Press <strong>F5</strong>.</p>
+
+<!-- TODO: Add application's screenshot -->
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Let’s build our application to ensure we’re good.</p>
+</blockquote></li>
+<li><p>Go back to the portal.</p></li>
+<li><p>Click <strong>NEW</strong> | <strong>WEB SITE</strong> | <strong>QUICK CREATE</strong>. </p></li>
+<li><p>Enter <strong>ContosoExpense</strong> for the <strong>URL</strong> or, if this DNS name is already in use, choose another suitable name.</p></li>
+<li><p>Choose the <strong>REGION</strong> where the site will be created.</p></li>
+<li><p>Click <strong>Create Web Site</strong>.</p>
+
+<p><img src="Images/creating-a-new-web-site.png?raw=true" alt="Creating a new Web Site" title="Creating a new Web Site">
+</p>
+
+<p><em>Creating a new Web site</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p><strong>Quick Create</strong> when you don’t need database connectivity or you will be setting up a database separately.</p>
+
+<p><strong>From Gallery</strong> when you want to quickly build a web site from one of several available templates.</p>
+
+<p><strong>Custom Create</strong> a website if you plan to deploy a completed web application to Window Azure and you want to simultaneously set up a database for use with your website.</p>
+
+<p>We need to specify the URL through which this app will be accessed, as well as the region where the application will be hosted.</p>
+
+<p>POINT: <strong>Notice how fast our Web site was provisioned</strong>.</p>
+</blockquote></li>
+<li><p>Once provisioned, select the newly created web site <strong>NAME</strong> in the list.</p>
+
+<p><img src="Images/selecting-web-sites-name.png?raw=true" alt="Selecting Web Site's name" title="Selecting Web Site's name">
+</p>
+
+<p><em>Managing the Web site</em></p></li>
+<li><p>In the <strong>DASHBOARD</strong>, click the <strong>Download publish profile</strong> link.</p>
+
+<p><img src="Images/downloading-publish-profile.png?raw=true" alt="Downloading Publish Profile" title="Downloading Publish Profile">
+</p>
+
+<p><em>Downloading the publish profile</em></p></li>
+<li><p>Save the file to the desktop or another suitable location.</p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>POINT: All of the information required to publish a Web application to a Windows Azure website is stored in an XML file known as a <strong>publish profile</strong>. The publish profile contains the URLs, user credentials and database strings required to connect to and authenticate against each of the endpoints for which a publication method is enabled.</p>
+</blockquote></li>
+<li><p>Go back to <strong>Visual Studio</strong>, right-click the <strong>Web Project</strong> and then select <strong>Publish</strong>.</p></li>
+<li><p>In the <strong>Publish Web</strong> dialog, click the <strong>Import</strong> button, browse to locate the <strong>.PublishSettings</strong> file that you downloaded previously, and then click <strong>Open</strong>.</p>
+
+<p><img src="Images/importing-publish-settings-file.png?raw=true" alt="Importing the publish settings file" title="Importing the publish settings file">
+</p>
+
+<p><em>Importing the publish settings file</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>POINT: <strong>MAXIMUM COMPATIBILITY!</strong></p>
+</blockquote></li>
+<li><p>Click <strong>Next</strong>.</p></li>
+<li><p>Click <strong>Publish</strong>.</p></li>
+<li><p>The web site will automatically load after the deployment is finished.</p>
+
+<p><img src="Images/publish-web-application-page.png?raw=true" alt="Publish Web Application Page" title="Publish Web Application Page">
+</p>
+
+<p><em>Publishing the Web application</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>The <strong>Web Deploy</strong> settings will be automatically populated according to the settings in the <strong>.PublishSettings</strong> file.</p>
+
+<p><strong>POINT:</strong> With a few clicks and using familiar tools we have deployed both the app and the database to the cloud with NO CODE except for changing the connection string. </p>
+</blockquote></li>
+</ol>
+
+<p><a name="segment3" /></p>
+
+<h4>Windows Azure SQL Database</h4>
+
+<ol>
+<li> Back in to the Windows Azure portal, select the <strong>SQL DATABASES</strong> option in the navigation pane.</li>
+<li><p>Click <strong>New</strong>.</p>
+
+<p><img src="Images/azure-portal-sql-databases.png?raw=true" alt="Azure Portal SQL Databases" title="Azure Portal SQL Databases">
+</p>
+
+<p><em>SQL Databases in the portal</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>We have multiple options for creating servers and databases. Previously, we clicked NEW on the navigation bar.
+Here, we simply need to create a server, so we'll take a different route and go back to the navigation bar and select SQL Databases.</p>
+</blockquote></li>
+<li><p>Select the <strong>SERVERS</strong> menu option.</p>
+
+<p><img src="Images/servers-section.png?raw=true" alt="Servers Section" title="Servers Section">
+</p>
+
+<p><em>Servers view</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>From here, we’ll click the <strong>SERVERS</strong> option because we simply need to provision a server.</p>
+</blockquote></li>
+<li><p>Now, click <strong>ADD</strong>.</p></li>
+<li><p>In the <strong>SQL Database server settings</strong> page, enter the following:</p>
+
+<ul>
+<li><strong>LOGIN NAME</strong>:  <em>AzureAdmin</em></li>
+<li><strong>LOGIN PASSWORD</strong>: <em>Passw0rd!</em></li>
+</ul></li>
+<li><p>Choose a <strong>REGION</strong> that matches the region used by the web site that you created previously.</p></li>
+<li><p>Ensure that the option labeled <strong>Allow Windows Azure services to access the server</strong> is selected.</p>
+
+<p><img src="Images/database-server-settings.png?raw=true" alt="Database server settings" title="Database server settings">
+</p>
+
+<p><em>Database server settings</em></p></li>
+<li><p>Click <strong>OK</strong>.</p></li>
+<li><p>Once the server is provisioned, click its Name on the list.</p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>The admin account is much like the <em>sa</em> account in the on-premises SQL Server. This account is the main administrator for the Windows Azure SQL Database server.
+You can create other accounts and assign different permissions just like you can on-premises.</p>
+</blockquote></li>
+<li><p>Click the <strong>CONFIGURE</strong> menu option.</p>
+
+<p><img src="Images/configure-option.png?raw=true" alt="Configure Option" title="Configure Option">
+</p>
+
+<p><em>Configure Option</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>With our server provisioned, we need to configure a few things.</p>
+</blockquote></li>
+<li><p>Add a firewall rule for the current IP address. You can click the arrow shown next to the <strong>CURRENT CLIENT IP ADDRESS</strong> field to do this automatically.</p>
+
+<p><img src="Images/add-firewall-rule.png?raw=true" alt="Add Firewall Rule" title="Add Firewall Rule">
+</p>
+
+<p><em>Adding a firewall rule for the current location</em></p></li>
+<li><p>Click <strong>Save</strong>.</p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>One of the great features of WA SQL Database is its built-in security. Firewall rules help protect your data by preventing all access to your server until you specify which computers have permission.</p>
+
+<p>Firewall rules grant access based on the originating IP addresses of each request.</p>
+
+<p>Let's save the changes.</p>
+</blockquote></li>
+<li><p>In the portal, select the <strong>DASHBOARD</strong> menu option and copy the <strong>FQDN</strong> of the server to the clipboard.</p>
+
+<p><img src="Images/manage-url.png?raw=true" alt="Manage URL" title="Manage URL">
+</p>
+
+<p><em>Manage URL</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Unchanged is how to connect to WA SQL DB; via a DNS endpoint.</p>
+</blockquote></li>
+<li><p>Go back to SQL Server Management Studio.</p></li>
+<li><p>In <strong>Object Explorer</strong>, click <strong>Connect -&gt; Database Engine</strong>.</p></li>
+<li><p>Select <em>SQL Server Authentication</em> as the authentication method and enter the following credentials:</p>
+
+<ul>
+<li><strong>Login</strong>: <em>AzureAdmin</em></li>
+<li><strong>Password</strong>: <em>Passw0rd!</em></li>
+</ul>
+
+<p><img src="Images/connecting-to-azure-sql-database.png?raw=true" alt="Connecting to Azure SQL Database" title="Connecting to Azure SQL Database">
+</p>
+
+<p><em>Connecting to Windows Azure SQL Database</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>We now have every relational database option in a single tool!</p>
+
+<ul>
+<li>On-premises</li>
+<li>SQL Server in a VM</li>
+<li>Windows Azure SQL Database</li>
+</ul>
+</blockquote></li>
+<li><p>We now need to import the database into the Windows Azure SQL Database.</p></li>
+<li><p>In Object Explorer, right-click the <strong>Databases</strong> node for the Windows Azure SQL Database connection and select <strong>Import Data-Tier Application</strong>.</p></li>
+<li><p>In the <strong>Introduction</strong> page, click <strong>Next</strong>.</p>
+
+<p><img src="Images/import-data-tier-application2.png?raw=true" alt="Import Data-tier Application" title="Import Data-tier Application">
+</p>
+
+<p><em>Importing a data-tier application</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Now, let’s use the same bacpac that we used earlier to also import the data into a Windows Azure SQL Database.</p>
+</blockquote></li>
+<li><p>In the <strong>Import Settings</strong> page, click <strong>Browse</strong> to locate and select the saved <strong>Expenses</strong> bacpac file and then click <strong>Open</strong>.</p></li>
+<li><p>Click <strong>Next</strong>.</p>
+
+<p><img src="Images/importing-bacpac-file2.png?raw=true" alt="Importing the bacpac file" title="Importing the bacpac file">
+</p>
+
+<p><em>Importing the bacpac file</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>POINT: COMPATIBILTY ON EXPORT.</p>
+</blockquote></li>
+<li><p>In the <strong>Database Settings</strong> page, enter the following:</p>
+
+<ul>
+<li><strong>New Database Name</strong>: <em>Expenses</em></li>
+<li><strong>Edition/ Maximum database size</strong>: Keep Default</li>
+</ul></li>
+<li><p>Click <strong>Next</strong>.</p></li>
+<li><p>In the <strong>Summary</strong> page, click <strong>Finish</strong>.</p>
+
+<p><img src="Images/specify-settings-for-the-new-sql-database.png?raw=true" alt="Specify Settings for the new SQL Database" title="Specify Settings for the new SQL Database">
+</p>
+
+<p><em>Configuring the new SQL Database</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Highlight the fact that it is important to know the size of the database so you can select the right edition and size.
+Also point out that this process will create the database for you.</p>
+</blockquote></li>
+<li><p>In the Portal, select the <strong>Databases</strong> option in the <strong>Navigation</strong> pane.</p></li>
+<li><p>Select the database <strong>NAME</strong>.    </p>
+
+<p><img src="Images/sql-databases-section.png?raw=true" alt="SQL Databases section" title="SQL Databases section">
+</p>
+
+<p><em>SQL Databases section</em></p></li>
+<li><p>In the <strong>DASHBOARD</strong>, click <strong>Show Connection Strings</strong>.</p>
+
+<p><img src="Images/show-connection-strings.png?raw=true" alt="Show Connection Strings" title="Show Connection Strings">
+</p>
+
+<p><em>Viewing the connection strings</em></p></li>
+<li><p>Highlight and copy the ADO.NET connection string.</p>
+
+<p><img src="Images/connection-string.png?raw=true" alt="Connection String" title="Connection String">
+</p>
+
+<p><em>Connection String</em></p></li>
+<li><p>In Visual Studio, open the <strong>Web.config</strong> file.</p></li>
+<li><p>Remove the existing connection string </p></li>
+<li><p>Press <strong>CTL+K, CTL+X</strong> and select <strong>My XML Snippets</strong>.</p></li>
+<li><p>Insert the <strong>AzureConnectionString</strong> and replace the placeholder with the connection string that you copied from the portal. </p></li>
+<li><p>Remember to update the password in the new connection string:</p>
+
+<p><img src="Images/updating-webconfig-with-azure-connection-stri.png?raw=true" alt="Updating Web.config with Azure Connection String" title="Updating Web.config with Azure Connection String">
+</p>
+
+<p><em>Updating Web.config with the Azure connection string</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>We now need to deploy the application to Windows Azure, but we now want it to connect to our database in the VM, so the first thing we need to do is modify the connection string.</p>
+</blockquote></li>
+<li><p>Right-click the <strong>Web Project</strong> and then select <strong>Publish</strong>.</p>
+
+<p><img src="Images/re-deploying-application.png?raw=true" alt="Re-deploying application" title="Re-deploying application">
+</p>
+
+<p><em>Re-deploying the application</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Simply by changing the connection string and redeploying, I'm  running completely in Azure managed services. </p>
+</blockquote></li>
+</ol>
+
+<p><a name="segment4" /></p>
+
+<h3>Windows Azure SQL Federation</h3>
+
+<ol>
+<li><p>In SQL Server Management Studio, expand the SQL Azure Connection in Object Explorer and select the <strong>Databases</strong> node.</p>
+
+<p><img src="Images/management-studios-object-explorer-.png?raw=true" alt="Object Explorer showing the SQL Azure Database connection" title="Object Explorer showing the SQL Azure Database connection">
+</p>
+
+<p><em>Object Explorer showing the SQL Azure Database connection</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>The database we have been using up to this point is a single Azure SQL Database. Since we've just discussed SQL Federations, we’re going to illustrate how to create a federated version of our expense report database.
+In SSMS, we need to create a new database from which we will create our federations. </p>
+</blockquote></li>
+<li><p>Right-click the <strong>Databases</strong> node, and select <strong>New Database</strong> to open a new query window connected to the <em>master</em> database. </p></li>
+<li><p>In the new query window, replace the placeholder for the database name with the name <em>ContosoFed</em> and execute the query.</p>
+
+<p><img src="Images/creating-a-new-database.png?raw=true" alt="Creating a new database" title="Creating a new database">
+</p>
+
+<p><em>Creating a new database</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Let’s open a new query window and create a new database. We’ll call this database ContosoFed. </p>
+
+<p>We need to make sure that the connection for this query window is connected to the master database.</p>
+</blockquote></li>
+<li><p>Once the database is created, in SSMS, open the <strong>ContosoExpenseFed_DB.sql</strong> script located in the <strong>Assets\Federations</strong> folder. Ensure that the query window connection is for the new database.</p></li>
+<li><p>Execute the script.</p>
+
+<p><img src="Images/create-federation-script.png?raw=true" alt="Create Federation script" title="Create Federation script">
+</p>
+
+<p><em>Create Federation script</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Before we run the script that will create our federation and federated objects, let’s spend a minute looking at the script and Federation syntax. </p>
+
+<ul>
+<li>CREATE FED statement</li>
+<li>USE FED statement</li>
+<li>Table changes for FEDs</li>
+<li>Use of GUIDS and why</li>
+</ul>
+
+<p>With our root database created, let’s run the script that will create our federation and associated federated objects.</p>
+</blockquote></li>
+<li><p>In Object Explorer in SSMS, expand the <strong>Federations</strong> node of the new database and right-click the <strong>UserExpense_Federation</strong>.</p>
+
+<p><img src="Images/azure-sql-database-connection.png?raw=true" alt="Azure SQL Database Connection" title="Azure SQL Database Connection">
+</p>
+
+<p><em>Windows Azure SQL Database connection</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>SQL Server 2012 now includes the ability to work directly with Federations.</p>
+
+<p>Talking Points:</p>
+
+<ul>
+<li>Connect to a specific Fed</li>
+<li>The ability to connect and query a specific federation</li>
+<li>Split - Scale the database by partitioning the database via the designated key.</li>
+</ul>
+</blockquote></li>
+<li><p>Now, open the <strong>ContosoExpenseFed_Split.sql</strong> script located in the <strong>Assets\Federations</strong> folder. Ensure that the query window connection is for the new database.</p></li>
+<li><p>Execute the first statement.</p></li>
+<li><p>Execute the 2nd set of statements (the DMV’s).</p></li>
+<li><p>Execute the SELECT queries.</p>
+
+<p><img src="Images/execute-federation-script.png?raw=true" alt="Execute Federation Script" title="Execute Federation Script">
+</p>
+
+<p><em>Executing the Federation script</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Walk through the examples of:</p>
+
+<ul>
+<li>Looking at the metadata</li>
+<li>Split operation</li>
+<li>Querying a specific fed mem</li>
+</ul>
+</blockquote></li>
+<li><p>Back in the portal, select <strong>SQL DATABASES</strong> from the navigation menu.</p></li>
+<li><p>Select the <strong>Databases</strong> option.</p></li>
+<li><p>Click the federated database <strong>NAME</strong> to view its properties.</p>
+
+<p><img src="Images/sql-databases-page.png?raw=true" alt="SQL Databases page" title="SQL Databases page">
+</p>
+
+<p><em>Managing the ContosoFed SQL Database</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>The Management Portal for SQL Azure is a lightweight and easy-to-use database management tool. It allows you to conveniently manage your SQL Azure databases and to quickly develop, deploy, and manage your data-driven applications in the cloud.</p>
+</blockquote></li>
+<li><p>In the <strong>Dashboard</strong> for the <strong>ContosoFed</strong> database, click the <strong>MANAGE URL</strong> link.</p>
+
+<p><img src="Images/manage-url2.png?raw=true" alt="Manage URL" title="Manage URL">
+</p>
+
+<p><em>Accessing the database management portal</em></p></li>
+<li><p>Enter the following credentials:</p>
+
+<ol>
+<li> <strong>User</strong>: <em>AzureAdmin</em></li>
+<li> <strong>Password</strong>: Passw0rd!</li>
+</ol></li>
+<li><p>Click <strong>Log on</strong>.</p>
+
+<p><img src="Images/log-in-to-azure-sql-database-portal.png?raw=true" alt="Log in to Azure SQL Database portal" title="Log in to Azure SQL Database portal">
+</p>
+
+<p><em>Windows Azure SQL Database portal</em></p></li>
+<li><p>In the <strong>Summary Page</strong> of the SQL Database portal, click the <strong>right arrow</strong> in the Federations section to show all federation members.</p>
+
+<p><img src="Images/sql-portal-showing-federations.png?raw=true" alt="SQL Portal showing federations" title="SQL Portal showing federations">
+</p>
+
+<p><em>Windows Azure SQL Database portal showing federations</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Database sharding is a technique for horizontally partitioning data across multiple physical servers to provide application scale-out. Windows Azure SQL Database combined with database sharding techniques provides for virtually unlimited scalability of data for an application.</p>
+</blockquote></li>
+<li><p>In the <strong>Federation Member</strong> grid, click the grey area.</p></li>
+<li><p>In the <strong>UserExpense_Federation</strong> dialog, select the <strong>Split</strong> option and set the value to <strong>40</strong>.</p></li>
+<li><p>Click <strong>Split</strong>.</p>
+
+<p><img src="Images/federation-member.png?raw=true" alt="Federation Member" title="Federation Member">
+</p>
+
+<p><em>Splitting a federation member</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Here, we’re going to specify the value on which to split the federation, thus creating a second federation member.</p>
+</blockquote></li>
+<li><p>Go back to SSMS</p></li>
+<li><p>Talk through the <strong>USE FEDERATION</strong> statements to query the different <strong>Federation Members</strong>.</p></li>
+</ol>
+
+<p><a name="segment5" /></p>
+
+<h3>Windows Azure Storage</h3>
+
+<ol>
+<li><p>Open the <strong>Windows Azure Management portal</strong> and select the <strong>STORAGE ACCOUNTS</strong> option in the <strong>Navigation Pane</strong>.</p>
+
+<p><img src="Images/selecting-the-storage-accounts.png?raw=true" alt="Managing storage accounts" title="Managing storage accounts">
+</p>
+
+<p><em>Managing storage accounts</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>There are three options for unstructured and non-relational data storage in Windows Azure: <strong>Blob</strong>, <strong>Table</strong>, and <strong>Queue</strong> services.</p>
+
+<p>A storage account is scoped to a primary geographic region and is configured by default to seamlessly replicate itself to a secondary region in case of a major failure in the primary region.</p>
+</blockquote></li>
+<li><p>Click <strong>New | STORAGE ACCOUNT | QUICK CREATE</strong>.  </p>
+
+<p><img src="Images/quick-create-storage-account.png?raw=true" alt="Quick Create Storage Account" title="Quick Create Storage Account">
+</p>
+
+<p><em>Quick Create a Storage Account</em></p></li>
+<li><p>In <strong>CREATE A NEW STORAGE ACCOUNT</strong>, enter <strong>contosoexpense</strong> for the storage account name or, if this name is already in use, choose a different name.</p></li>
+<li><p>Choose a <strong>REGION/AFFINITY GROUP</strong> that matches the one used by the web site that you created previously.</p>
+
+<p><img src="Images/creating-the-storage-account.png?raw=true" alt="Creating the Storage Account" title="Creating the Storage Account">
+</p>
+
+<p><em>Creating the storage account</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>You can specify either a <strong>geographic region</strong> or an <strong>affinity group</strong> for your storage. By specifying an affinity group, you can co-locate your cloud apps in the same data center with your storage</p>
+
+<p>Geo-replication is turned on by default. During geo-replication, your data is replicated to a secondary location, at no cost to you, so that your storage fails over seamlessly to a secondary location in the event of a major failure that can't be handled in the primary location. The secondary location is assigned automatically, and can't be changed.</p>
+</blockquote></li>
+<li><p>Click <strong>CREATE STORAGE ACCOUNT</strong>.    </p></li>
+<li><p>Open <strong>Visual Studio</strong> and go to <strong>Tools | Library Package Manager | Package Manager Console</strong>.</p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>By running the following command in the <strong>Package Manager Console</strong>, we are adding the Windows Azure Storage Client libraries to the project.</p>
+</blockquote></li>
+<li><p>In the <strong>Package Manager Console</strong>, type: <em>Install-Package WindowsAzure.Storage</em>.</p>
+
+<p><img src="Images/using-the-package-manager-console.png?raw=true" alt="Using the Package Manager Console" title="Using the Package Manager Console">
+</p>
+
+<p><em>Installing the Windows Azure Storage Client library</em></p></li>
+<li><p>In Solution Explorer, right-click the <strong>Helpers</strong> folder, point to <strong>Add</strong> and select <strong>Existing Item</strong>. </p></li>
+<li><p>Browse to the <strong>Assets\storage</strong> folder, select <strong>StorageHelper.cs</strong> and click <strong>Add</strong>.</p>
+
+<p><img src="Images/add-storage-helper-class.png?raw=true" alt="Adding the StorageHelper class to the project" title="Adding the StorageHelper class to the project">
+</p>
+
+<p><em>Adding the StorageHelper class to the project</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>We'll also add a helper class that handles the creation of blob containers and sets their access permission.</p>
+</blockquote></li>
+<li><p>Open <strong>Views | Reports | EditorTemplates | ExpenseReportDetail.cshtml</strong></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Let’s add the code to show the <strong>Attach Receipt</strong> link/icon for each expense line item.</p>
+</blockquote></li>
+<li><p>Insert a new line after the comment that reads &quot;<strong>Attach Link Here</strong>&quot; and type the text <strong>attachreceiptlink</strong> in this line. Then, press <strong>TAB</strong> to install the corresponding code snippet.</p>
+
+<p><img src="Images/editing-extensereportdetailcshtml.png?raw=true" alt="Editing ExtenseReportDetail.cshtml" title="Editing ExtenseReportDetail.cshtml">
+</p>
+
+<p><em>Editing the ExpenseReportDetail template</em></p></li>
+<li><p>Open <strong>Views | Reports | Edit.cshtml</strong></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Next, let’s add the <strong>Submit Receipt</strong> form.</p>
+</blockquote></li>
+<li><p>Insert a new line after the comment that reads &quot;<strong>Attach Form Here</strong>&quot; and type the text <strong>attachreceiptform</strong> in this line. Then, press <strong>TAB</strong> to install the corresponding code snippet.   </p>
+
+<p><img src="Images/editing-editcshtml.png?raw=true" alt="Editing Edit.cshtml" title="Editing Edit.cshtml">
+</p>
+
+<p><em>Updating the Edit view</em></p></li>
+<li><p>Open <strong>Controllers | ReportsController</strong></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Next, let’s add the code to <strong>save the receipt to blob storage</strong>.</p>
+</blockquote></li>
+<li><p>In the <strong>ReportsController</strong> class, Insert a new line immediately below the <strong>Summary</strong> action method, type <strong>attachreceiptmethod</strong> and press <strong>TAB</strong> to install the code snippet.</p>
+
+<p><img src="Images/editing-reportscontrollercs.png?raw=true" alt="Editing ReportsController.cs" title="Editing ReportsController.cs">
+</p>
+
+<p><em>Inserting the AttachReceipt action</em></p></li>
+<li><p>Go back to the <strong>Azure Management portal</strong> and select <strong>STORAGE</strong> from the navigation pane.</p>
+
+<p><img src="Images/managing-storage-in-the-management-portal.png?raw=true" alt="Managing storage in the Management Portal" title="Managing storage in the Management Portal">
+</p>
+
+<p><em>Managing storage in the Management Portal</em></p></li>
+<li><p>Select the newly created storage account <strong>NAME</strong> in the list of storage accounts.</p>
+
+<p><img src="Images/selecting-the-storage-account-name.png?raw=true" alt="Selecting the Storage Account Name" title="Selecting the Storage Account Name">
+</p>
+
+<p><em>Managing the storage account</em></p></li>
+<li><p>Select the <strong>CONFIGURE</strong> menu option.</p>
+
+<p><img src="Images/selecting-configure-option.png?raw=true" alt="Selecting Configure Option" title="Selecting Configure Option">
+</p>
+
+<p><em>Configuring the storage account</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>The <strong>Minimal</strong> monitoring value collects metrics such as ingress/egress, availability, latency, and success percentages summarized at the Blob, Table, and Queue service level.</p>
+
+<p>The <strong>Verbose</strong> monitoring value collects metrics at the API operation level in addition to the service-level metrics. Verbose metrics enable closer analysis of issues that occur during application operations.</p>
+</blockquote></li>
+<li><p>In the <strong>monitoring</strong> section, set the monitoring level of  <strong>BLOBS</strong> to <strong>MINIMAL</strong>.</p>
+
+<p><img src="Images/selecting-monitoring-blobs-option.png?raw=true" alt="Selecting Monitoring Blobs Option" title="Selecting Monitoring Blobs Option">
+</p>
+
+<p><em>Configuring storage monitoring options</em></p></li>
+<li><p>In the command bar, click <strong>SAVE</strong> to save the changes to the monitoring configuration.</p>
+
+<p><img src="Images/save-monitoring-configuration.png?raw=true" alt="Saving the monitoring configuration" title="Saving the monitoring configuration">
+</p>
+
+<p><em>Saving the monitoring configuration</em></p></li>
+<li><p>Next, in the command bar, click <strong>MANAGE KEYS</strong>.</p>
+
+<p><img src="Images/clicking-manage-keys.png?raw=true" alt="Managing the storage account keys" title="Clicking the storage account keys">
+</p>
+
+<p><em>Managing the storage account keys</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>We need to retrieve our <strong>account key</strong>. To do this, we go back to the portal, select our storage account, and click <strong>MANAGE KEYS</strong>.</p>
+</blockquote></li>
+<li><p>Copy the value of the <strong>PRIMARY ACCESS KEY</strong> to the clipboard.</p>
+
+<p><img src="Images/copying-the-primary-access-key.png?raw=true" alt="Copying the Primary Access Key" title="Copying the Primary Access Key">
+</p>
+
+<p><em>Copying the primary access key</em></p></li>
+<li><p>Open the <strong>Web.config</strong> file and find the comment that reads “<strong>Windows Azure Storage Account</strong>” within the <strong>appSettings</strong> section.</p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Let’s add the storage account snippet. This information allows us to securely access our storage services.</p>
+</blockquote></li>
+<li><p>Press <strong>CTL+K</strong>, <strong>CTL+X</strong> and select <strong>My XML Snippets</strong>.</p></li>
+<li><p>Insert the <strong>StorageAccountInfo</strong> snippet and replace the storage account name with the name of your storage account and the key with the value you copied from the portal.</p>
+
+<p><img src="Images/editing-webconfig-values.png?raw=true" alt="Editing Web.config values" title="Editing Web.config values">
+</p>
+
+<p><em>Configuring the storage account settings</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Every account has a set of unique keys. We need to update the key in our web.config with the key or the account we just generated.</p>
+</blockquote></li>
+<li><p>Right-click the <strong>Web Project</strong> and select <strong>Publish</strong> from the context menu. Follow the wizard to redeploy the updated files.</p>
+
+<p><img src="Images/redeploying-the-application.png?raw=true" alt="Redeploying the application" title="Redeploying the application">
+</p>
+
+<p><em>Redeploying the application</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Finally, let’s redeploy the application.</p>
+</blockquote></li>
+<li><p>In the expense App, log in as a user and modify the expense report to attach a receipt.</p></li>
+<li><p>Click the <strong>Attach receipt</strong> icon.</p>
+
+<p><img src="Images/attach-receipt.png?raw=true" alt="Clicking Attach Receipt" title="Clicking Attach Receipt">
+</p>
+
+<p><em>Attaching a new receipt</em></p></li>
+<li><p>In the <strong>Attach Receipt</strong> dialog, click <strong>Browse</strong>.</p>
+
+<p><img src="Images/clicking-browse-receipt.png?raw=true" alt="Clicking Browse Receipt" title="Clicking Browse Receipt">
+</p>
+
+<p><em>Attach Receipt dialog</em></p></li>
+<li><p>Go to the <strong>Assets\receipts</strong> folder and select <em>Receipt.png</em>.</p>
+
+<p><img src="Images/submitting-a-receipt.png?raw=true" alt="Submitting a receipt" title="Submitting a Receipt">
+</p>
+
+<p><em>Submitting a receipt</em></p></li>
+<li><p>In the <strong>Attach Receipt</strong> dialog, click <strong>Submit</strong>.  </p></li>
+<li><p>Finally, click <strong>Save and Submit</strong> to submit the expense report.</p>
+
+<p><img src="Images/saving-and-submitting.png?raw=true" alt="Submitting an expense" title="Submitting an expense">
+</p>
+
+<p><em>Submitting an expense</em></p></li>
+<li><p>Log off as a user.</p></li>
+<li><p>Now, log in as a manager, approve the expense report and view the receipt.</p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Types of data store and manage. Query with familiar tools.</p>
+</blockquote></li>
+<li><p>Back in the portal, click the <strong>MONITOR</strong> option.    </p>
+
+<p><img src="Images/portal-monitor-option.png?raw=true" alt="Portal Monitor Option" title="Portal Monitor Option">
+</p>
+
+<p><em>Monitoring the storage account</em></p>
+<blockquote>
+<p><strong>Speaking Point</strong></p>
+
+<p>Hopefully there will be some data.</p>
+</blockquote></li>
+</ol>
+
+<hr>
+
+<p><a name="summary" /></p>
+
+<h2>Summary</h2>
+
+<p>In this demo, you learned how to:</p>
+
+<ol>
+<li><p>Deploy applications to Windows Azure Web sites.</p></li>
+<li><p>Provision a virtual machine in Windows Azure to run SQL Server 2012.</p></li>
+<li><p>Connect applications to a Windows Azure SQL Database.</p></li>
+<li><p>Connect applications to use Windows Azure Storage.</p></li>
+<li><p>Create SQL Database Federations.</p></li>
+</ol>
