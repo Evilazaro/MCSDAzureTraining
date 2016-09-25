@@ -1,0 +1,323 @@
+<p><a name="Deploy-AD-in-Windows-Azure" /></p>
+
+<h1>Deploy Active Directory using GUI in Windows Azure</h1>
+
+<hr>
+
+<p><a name="Overview" /></a></p>
+
+<h2>Overview</h2>
+
+<p>In this lab, you will provision a newly created Windows Server 2012 Virtual Machine called DC01 in Windows Azure using the Windows Azure management console in your web browser and then deploy Active Directory using Server Manager on DC01. DC01 will be the first domain controller in a new forest.</p>
+
+<p>When deploying Active Directory in Windows Azure, two aspects are important to point out.</p>
+
+<p>The first one is the networking configuration. Domain members and domain controllers need to find the DNS server hosting the domain DNS information. You will configure the Azure network configuration, so that the correct DNS server is configured.</p>
+
+<p>Secondly, it is important to avoid the possibility of Active Directory database corruption. Active Directory assumes that it can write its database updates directly to disk. That means that you should place the Active Directory database files on a data disk that does not have write caching enabled.</p>
+
+<p><a name="Objectives" /></a></p>
+
+<h3>Objectives</h3>
+
+<p>In this hands-on lab, you will learn how to:</p>
+
+<ul>
+<li>Provision a data disk to a Virtual Machine</li>
+<li>Deploy a Domain Controller in Windows Azure</li>
+</ul>
+
+<p><a name="Prerequisites" /></a></p>
+
+<h3>Prerequisites</h3>
+
+<ol>
+<li>Complete the Provisioning a Windows Azure Virtual Machine HOL</li>
+</ol>
+<blockquote>
+<p><strong>Note:</strong> In order to run through the complete hands-on lab, you must have network connectivity. </p>
+</blockquote>
+<p><a name="Exercises" /></a></p>
+
+<h2>Exercises</h2>
+
+<p>This hands-on lab includes the following exercises:</p>
+
+<ol>
+<li><a href="#Exercise1">Add a new data disk to the virtual machine</a></li>
+<li><a href="#Exercise2">Deploy a new domain controller in Windows Server 2012</a></li>
+</ol>
+
+<hr>
+
+<p><a name="Exercise1" /></a></p>
+
+<h3>Exercise 1: Add a new data disk to the virtual machine</h3>
+
+<p>You will now modify the virtual machine you already created from the &quot;Provisioning a virtual machine&quot; lab.  We will call this VM DC01.  We will create and provision a data disk to this existing VM which will be used in exercise 2 to place the AD database files.</p>
+
+<p>Exercise 1 contains 2 tasks:</p>
+
+<ol>
+<li>Attach a data disk to DC01</li>
+<li>Configure a new data disk on DC01</li>
+</ol>
+
+<p><a name="Ex1Task1" /></a></p>
+
+<h4>Task 1 - Attach a data disk to DC01</h4>
+
+<ol>
+<li><p>In the <strong>Virtual Machines</strong> section of the Windows Azure portal, select the <strong>DC01</strong> virtual machine, and then on the bottom toolbar, click <strong>Attach | Attach empty disk</strong>.</p>
+
+<p><img src="./Images/attaching-an-empty-disk.png?raw=true" alt="Attaching an empty disk" title="Attaching an empty disk">
+</p>
+
+<p><em>Attaching an empty disk</em></p></li>
+<li><p>In the <em>Attach an empty disk to the virtual machine</em> dialog box, in the <strong>File Name</strong> text box, type <strong>DC01-data</strong>.</p></li>
+<li><p>In the <strong>Size (GB)</strong> text box, type <strong>10</strong>.</p></li>
+<li><p>Click the check mark icon to continue. <em>Notice that by default a data disk does not have Read or Read Write caching enabled. For use with the Active Directory database files, we need to use a data disk without caching.</em></p>
+
+<p><img src="./Images/completing-the-creation-of-the-disk.png?raw=true" alt="Completing the creation of the disk" title="Completing the creation of the disk">
+</p>
+
+<p><em>Completing the creation of the disk</em></p></li>
+</ol>
+
+<p><a name="Ex1Task2" /></a></p>
+
+<h4>Task 2 - Configure a new data disk</h4>
+
+<ol>
+<li><p>In the <strong>Virtual Machines</strong> section of the Windows Azure portal, select the <strong>DC01</strong> virtual machine, and then on the toolbar, click the <strong>Connect</strong> icon to connect using <strong>Remote Desktop Connection</strong>.</p>
+
+<p><img src="./Images/connecting-to-the-dc01-vm.png?raw=true" alt="Connecting to the DC01 Virtual Machine" title="Connecting to the DC01 Virtual Machine">
+</p>
+
+<p><em>Connecting to the DC01 Virtual Machine</em></p></li>
+<li><p>Open the DC01.rdp file, and connect to the virtual machine.</p>
+<blockquote>
+<p><strong>Note:</strong> use the credentials that you inserted when creating the virtual machine in Task 1 of this exercise.</p>
+</blockquote></li>
+<li><p>Once on the DC01 virtual machine, open the <strong>Server Manager</strong>. On the <strong>Tools</strong> menu, click <strong>Computer Management</strong>. <em>The Computer Management console opens.</em></p>
+
+<p><img src="./Images/opening-the-computer-manager-console.png?raw=true" alt="Opening the Computer Manager console" title="Opening the Computer Manager console">
+</p>
+
+<p><em>Opening the Computer Manager console</em></p></li>
+<li><p>In the Computer Management console, in the left pane, select <strong>Disk Management</strong>. <em>Disk Management recognizes that a new initialize disk is added to the computer, and it will show the Initialize Disk dialog box.</em></p>
+
+<p><img src="./Images/selecting-disk-management.png?raw=true" alt="Selecting Disk Management" title="Selecting Disk Management">
+</p>
+
+<p><em>Selecting Disk Management</em></p></li>
+<li><p>In the Initialize Disk dialog box, click <strong>OK</strong>. <em>The new Disk 2 is initialized.</em></p>
+
+<p><img src="./Images/initializing-the-disk-2.png?raw=true" alt="Initializing the disk 2" title="Initializing the disk 2">
+</p>
+
+<p><em>Initializing the disk 2</em></p></li>
+<li><p>On Disk 2, right-click the <strong>Unallocated</strong> space, and then click <strong>New Simple Volume</strong>. <em>The New Simple Volume Wizard opens.</em></p>
+
+<p><img src="./Images/formating-the-unallocated-space.png?raw=true" alt="Formatting the unallocated space" title="Formatting the unallocated space">
+</p>
+
+<p><em>Formatting the unallocated space</em></p></li>
+<li><p>In the new Simple Volume Wizard, click <strong>Next</strong>.</p>
+
+<p><img src="./Images/using-the-simple-volume-wizard.png?raw=true" alt="Using the Simple Volume Wizard" title="Using the Simple Volume Wizard">
+</p>
+
+<p><em>Using the Simple Volume Wizard</em></p></li>
+<li><p>On the Specify Volume Size page, click <strong>Next</strong>. <em>This means that the entire available space (10237 MB) will become a new volume.</em></p>
+
+<p><img src="./Images/specifing-the-volume-size.png?raw=true" alt="Specifying the volume size" title="Specifying the volume size">
+</p>
+
+<p><em>Specifying the volume size</em></p></li>
+<li><p>On the Assign Drive Letter or Path page, ensure drive letter <strong>F</strong> is selection, and then click <strong>Next</strong>.</p>
+
+<p><img src="./Images/assigning-the-drive-letter.png?raw=true" alt="Assigning the drive letter" title="Assigning the drive letter">
+</p>
+
+<p><em>Assigning the drive letter</em></p></li>
+<li><p>On the Format Partition page, in the <strong>Volume Label</strong> text box, type <strong>AD DS Data</strong>, and then click <strong>Next</strong>.</p>
+
+<p><img src="./Images/specifing-the-volume-label.png?raw=true" alt="Specifying the volume label" title="Specifying the volume label">
+</p>
+
+<p><em>Specifying the volume label</em></p></li>
+<li><p>On the Completing the New Simple Volume Wizard page, click <strong>Finish</strong>. <em>Windows will quick format the disk, and assign drive letter F:.</em></p>
+
+<p><img src="./Images/completing-the-wizard.png?raw=true" alt="Completing the wizard" title="Completing the wizard">
+</p>
+
+<p><em>Completing the wizard</em></p>
+<blockquote>
+<p><strong>Note:</strong> if you are prompted to format the new AS DS Data disk, click <strong>OK</strong> in the dialog box and format the disk as NTFS.</p>
+</blockquote></li>
+<li><p>Close the Computer Management console.</p></li>
+</ol>
+
+<hr>
+
+<p><a name="Exercise2" /></a></p>
+
+<h3>Exercise 2: Deploy a new domain controller in Windows Server 2012</h3>
+
+<p>You have just created a base virtual machine called DC01, attached the necessary data disk, and provisioned the disk. We are going to login to DC01 to install and configure active directory and then verify the install was successful.</p>
+
+<p>Exercise 2 contains 3 tasks:</p>
+
+<ol>
+<li>Install the Active Directory Domain Services Role </li>
+<li>Configure the Active Directory Domain Services Role</li>
+<li>Verify the Domain Controller Installed Successfully</li>
+</ol>
+
+<p><a name="Ex2Task1" /></a></p>
+
+<h4>Task 1 - Install the Active Directory Domain Services Role</h4>
+
+<ol>
+<li><p>In the DC01 virtual machine, on the <strong>Dashboard</strong> page of the <strong>Server Manager</strong>, click <strong>Add roles and features</strong>.</p>
+
+<p><img src="./Images/configuring-the-server.png?raw=true" alt="Configuring the server" title="Configuring the server">
+</p>
+
+<p><em>Configuring the server</em></p></li>
+<li><p>In the Add Roles and Features Wizard, click <strong>Next</strong>.</p></li>
+<li><p>On the Select Installation Type page, select <strong>Role-based or feature-based installation</strong>, and then click <strong>Next</strong>.</p></li>
+<li><p>On the Select Destination Server page, click <strong>Next</strong>.</p>
+
+<p><img src="./Images/selecting-the-destination-server.png?raw=true" alt="Selecting the destination server" title="Selecting the destination server">
+</p>
+
+<p><em>Selecting the destination server</em></p></li>
+<li><p>On the Select Server Roles page, select <strong>Active Directory Domain Services</strong>.</p></li>
+<li><p>In the Add Roles and Features dialog box, click <strong>Add Features</strong>.</p></li>
+<li><p>Once the <em>Active Directory Domain Services</em> role is selected, click <strong>Next</strong>.</p>
+
+<p><img src="./Images/selecting-server-roles.png?raw=true" alt="Selecting server roles" title="Selecting server roles">
+</p>
+
+<p><em>Selecting server roles</em></p></li>
+<li><p>On the Select Features page, click <strong>Next</strong>.</p>
+
+<p><img src="./Images/selecting-features.png?raw=true" alt="Selecting features" title="Selecting features">
+</p>
+
+<p><em>Selecting features</em></p></li>
+<li><p>On the Active Directory Domain Services page, click <strong>Next</strong>.</p></li>
+<li><p>On the Confirm Installation Selection page, click <strong>Install</strong>.</p></li>
+<li><p>Wait for the installation to complete. Do not click <strong>Close</strong>. <em>Windows is installing the Active Directory Domain Services role.</em></p>
+
+<p><img src="./Images/waiting-for-the-installation-to-complete.png?raw=true" alt="Waiting for the installation to complete" title="Waiting for the installation to complete">
+</p>
+
+<p><em>Waiting for the installation to complete</em></p></li>
+</ol>
+
+<p><a name="Ex2Task2" /></a></p>
+
+<h4>Task 2 - Configure the Active Directory Domain Services Role</h4>
+
+<ol>
+<li><p>When the feature installation has completed, click the link <strong>Promote this server to a domain controller</strong>. You can do this in the Add Roles and Features Wizard dialog box, or in the listed Server Manager flagged warning tasks.</p>
+
+<p><img src="./Images/promoting-the-server.png?raw=true" alt="Promoting the server" title="Promoting the server">
+</p>
+
+<p><em>Promoting the server</em></p></li>
+<li><p>On the Deployment Configuration page, select <strong>Add a new forest</strong>.</p></li>
+<li><p>In the <strong>Root domain name:</strong> text box, type <strong>contoso.com</strong>. Click <strong>Next</strong>.</p></li>
+<li><p>Leave all of the default settings and then type <strong>Passw0rd!</strong> for the DSRM password and click <strong>Next</strong>. </p>
+
+<p><img src="./Images/configuring-the-deployment.png?raw=true" alt="Configuring the deployment" title="Configuring the deployment">
+</p>
+
+<p><em>Configuring the deployment</em>    </p></li>
+<li><p>Ignore the warning in the DNS Options section and click <strong>Next</strong>.</p></li>
+<li><p>On the Additional Options page, click <strong>Next</strong>.</p></li>
+<li><p>On the Paths page, change the folders as follows and click <strong>Next</strong>.</p>
+
+<table><thead>
+<tr>
+<td>Field</td>
+<td>Value</td>
+</tr>
+</thead><tbody>
+<tr>
+<td>Database folder</td>
+<td><strong>F:\NTDS</strong></td>
+</tr>
+<tr>
+<td>Log files folder</td>
+<td><strong>F:\NTDS</strong></td>
+</tr>
+<tr>
+<td>SYSVOL folder</td>
+<td><strong>F:\SYSVOL</strong></td>
+</tr>
+</tbody></table>
+<p><img src="./Images/specifing-the-paths.png?raw=true" alt="Specifying the paths" title="Specifying the paths.">
+</p>
+
+<p><em>Specifying the paths</em></p>
+<blockquote>
+<p><strong>Note:</strong> <em>The C: disk is the OS disk, and has caching enabled. The Active Directory database should not be stored on a disk that has write caching enabled. The F: disk is a data disk we added earlier, and does not have caching enabled.</em></p>
+</blockquote></li>
+<li><p>On the Review Options page, click <strong>Next</strong>.</p>
+
+<p><img src="./Images/reviewing-the-options.png?raw=true" alt="Reviewing the options" title="Reviewing the options">
+</p>
+
+<p><em>Reviewing the options</em></p></li>
+<li><p>On the Prerequisites Check page, click <strong>Install</strong>. The computer is promoted to domain controller.</p></li>
+<li><p>After a few moments, the DC01 Virtual Machine will restart. You will lose the connection to the restarting Virtual Machine.</p>
+
+<p><img src="./Images/checking-the-prerequisites.png?raw=true" alt="Checking the prerequisites" title="Checking the prerequisites">
+</p>
+
+<p><em>Checking the prerequisites</em></p></li>
+</ol>
+
+<p><a name="Ex2Task3" /></a></p>
+
+<h4>Task 3 - Verify the Domain Controller Installed Successfully</h4>
+<blockquote>
+<p><strong>Note:</strong> You will need to wait about 2-3 minutes after clicking install in the previous step for the DC01 Virtual Machine to restart in order to be able to connect.</p>
+</blockquote>
+<ol>
+<li><p>In the <strong>Virtual Machines</strong> section of the Windows Azure portal, select the <strong>DC01</strong> virtual machine, and then on the toolbar, click the <strong>Connect</strong> icon to connect using <strong>Remote Desktop Connection</strong>.</p>
+
+<p><img src="./Images/connecting-to-the-dc01-vm.png?raw=true" alt="Connecting to the DC01 Virtual Machine" title="Connecting to the DC01 Virtual Machine">
+</p>
+
+<p><em>Connecting to the DC01 Virtual Machine</em></p></li>
+<li><p>Open the DC01.rdp file, and connect to the virtual machine.</p>
+<blockquote>
+<p><strong>Note:</strong> use the credentials that you inserted when creating the virtual machine in Task 1 of this exercise.</p>
+</blockquote></li>
+<li><p>After logon, in Server Manager, on the <strong>Tools</strong> menu, click <strong>Active Directory Administrative Center</strong>. <em>The Active Directory Administrative Center console opens.</em></p>
+
+<p><img src="./Images/opening-the-ad-administrative-center-console.png?raw=true" alt="Opening the Active Directory Administrative Center console" title="Opening the Active Directory Administrative Center console">
+</p>
+
+<p><em>Opening the Active Directory Administrative Center console</em></p></li>
+<li><p>In the Active Directory Administrative Center window, in the left pane, expand <strong>contoso (local)</strong>, and then select <strong>Domain Controllers</strong>. <em>Notice that the domain has the DC01 domain controller listed. This result confirms that DC01 was successfully promoted to domain controller.</em></p>
+
+<p><img src="./Images/selecting-domain-controllers.png?raw=true" alt="Selecting Domain Controllers" title="Selecting Domain Controllers">
+</p>
+
+<p><em>Selecting Domain Controllers</em></p></li>
+<li><p>Close the Active Directory Administrative Center console.</p></li>
+</ol>
+
+<hr>
+
+<p><a name="Summary"/></a></p>
+
+<h2>Summary</h2>
+
+<p>In this lab, you walked through the steps of deploying a new Active Directory Domain controller in a new forest using Windows Azure virtual machines.</p>
