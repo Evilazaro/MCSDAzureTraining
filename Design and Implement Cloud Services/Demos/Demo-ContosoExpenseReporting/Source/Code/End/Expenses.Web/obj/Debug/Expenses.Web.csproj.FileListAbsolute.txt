@@ -1,0 +1,1 @@
+C:\GitHub\MCSDAzureTraining\Design and Implement Cloud Services\Demos\Demo-ContosoExpenseReporting\Source\Code\End\Expenses.Web\obj\Debug\Expenses.Web.csprojResolveAssemblyReference.cache

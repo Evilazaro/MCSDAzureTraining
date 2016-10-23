@@ -1,0 +1,10 @@
+C:\GitHub\MCSDAzureTraining\Design and Implement Cloud Services\Demos\WATK\HelloWorldWSCS\Source\Code\MyWebSite\BackgroundService\bin\Debug\BackgroundService.dll.config
+C:\GitHub\MCSDAzureTraining\Design and Implement Cloud Services\Demos\WATK\HelloWorldWSCS\Source\Code\MyWebSite\BackgroundService\bin\Debug\BackgroundService.dll
+C:\GitHub\MCSDAzureTraining\Design and Implement Cloud Services\Demos\WATK\HelloWorldWSCS\Source\Code\MyWebSite\BackgroundService\bin\Debug\BackgroundService.pdb
+C:\GitHub\MCSDAzureTraining\Design and Implement Cloud Services\Demos\WATK\HelloWorldWSCS\Source\Code\MyWebSite\BackgroundService\bin\Debug\Microsoft.WindowsAzure.Configuration.dll
+C:\GitHub\MCSDAzureTraining\Design and Implement Cloud Services\Demos\WATK\HelloWorldWSCS\Source\Code\MyWebSite\BackgroundService\bin\Debug\Microsoft.WindowsAzure.Diagnostics.dll
+C:\GitHub\MCSDAzureTraining\Design and Implement Cloud Services\Demos\WATK\HelloWorldWSCS\Source\Code\MyWebSite\BackgroundService\bin\Debug\Microsoft.WindowsAzure.StorageClient.dll
+C:\GitHub\MCSDAzureTraining\Design and Implement Cloud Services\Demos\WATK\HelloWorldWSCS\Source\Code\MyWebSite\BackgroundService\bin\Debug\MonAgentListener.dll
+C:\GitHub\MCSDAzureTraining\Design and Implement Cloud Services\Demos\WATK\HelloWorldWSCS\Source\Code\MyWebSite\BackgroundService\obj\Debug\BackgroundService.csprojResolveAssemblyReference.cache
+C:\GitHub\MCSDAzureTraining\Design and Implement Cloud Services\Demos\WATK\HelloWorldWSCS\Source\Code\MyWebSite\BackgroundService\obj\Debug\BackgroundService.dll
+C:\GitHub\MCSDAzureTraining\Design and Implement Cloud Services\Demos\WATK\HelloWorldWSCS\Source\Code\MyWebSite\BackgroundService\obj\Debug\BackgroundService.pdb
